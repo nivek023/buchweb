@@ -2,7 +2,7 @@ import "./App.css";
 import Navbar from "./components/header/Navbar";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./components/main/Home";
-import Search from "./components/main/Search";
+import Add from "./components/main/AddNewBook"
 
 function App() {
   return (
@@ -13,7 +13,7 @@ function App() {
         <div className="content">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/search" element={<Search />} />
+            <Route path="/add" element={<Add />} />
           </Routes>
         </div>
       </div>
