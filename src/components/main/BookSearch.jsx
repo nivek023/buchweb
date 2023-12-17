@@ -1,4 +1,4 @@
-import { Check, Close, Search } from '@mui/icons-material'
+import { Check, Close, Search, Delete } from '@mui/icons-material'
 import {
   Button,
   Checkbox,
@@ -12,11 +12,13 @@ import {
   Select,
   TextField,
   Typography,
+  IconButton,
 } from '@mui/material'
 import { DataGrid } from '@mui/x-data-grid'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-const SearchBook = () => {
+const BookSearch = () => {
   const [buchData, setBuchData] = useState([])
   const [searchIsbn, setSearchIsbn] = useState('')
   const [searchTitel, setSearchTitel] = useState('')
@@ -26,6 +28,8 @@ const SearchBook = () => {
   const [radioValue, setRadioValue] = useState('')
   const [searchError, setSearchError] = useState(false)
   const [showTable, setShowTable] = useState(false)
+
+  const navigate = useNavigate()
 
   const handleSearch = async () => {
     setSearchError(false)
@@ -89,8 +93,12 @@ const SearchBook = () => {
 
   const buchDataWithUniqueIsbn = buchData.map((buch) => ({
     ...buch,
-    uniqueId: buch.isbn,
+    uniqueIsbn: buch.isbn,
   }))
+
+  const navigateToDetails = (params) => {
+    navigate(`/details/${params.row.uniqueIsbn}`)
+  }
 
   return (
     <div>
@@ -188,7 +196,8 @@ const SearchBook = () => {
           <div style={{ height: 371, width: '100%' }}>
             <DataGrid
               rows={buchDataWithUniqueIsbn}
-              getRowId={(row) => row.uniqueId}
+              getRowId={(row) => row.uniqueIsbn}
+              onRowClick={navigateToDetails}
               columns={[
                 { field: 'isbn', headerName: 'Isbn', flex: 1 },
                 {
@@ -209,7 +218,21 @@ const SearchBook = () => {
                 {
                   field: 'schlagwoerter',
                   headerName: 'Schlagwörter',
+                  flex: 2,
+                },
+                {
                   flex: 1,
+                  renderCell: () => (
+                    <IconButton
+                      aria-label="delete"
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        // Funktion zum Löschen
+                      }}
+                    >
+                      <Delete />
+                    </IconButton>
+                  ),
                 },
               ]}
               initialState={{
@@ -226,4 +249,4 @@ const SearchBook = () => {
   )
 }
 
-export default SearchBook
+export default BookSearch
