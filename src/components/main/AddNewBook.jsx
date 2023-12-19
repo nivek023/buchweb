@@ -1,18 +1,22 @@
 import { useState } from 'react'
-import TextField from '@mui/material/TextField'
-import Checkbox from '@mui/material/Checkbox'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Button from '@mui/material/Button'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableRow from '@mui/material/TableRow'
-import Radio from '@mui/material/Radio'
-import RadioGroup from '@mui/material/RadioGroup'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import Rating from '@mui/material/Rating'
+
+import {
+  TextField,
+  Checkbox, 
+  FormControlLabel,
+  Button, 
+  Grid,
+  Table, 
+  TableBody, 
+  TableContainer,
+  TableCell, 
+  TableRow,
+  Radio, 
+  RadioGroup,
+  Select,
+  MenuItem, 
+  Rating
+} from '@mui/material'
 import BookIcon from '@mui/icons-material/Book'
 
 const AddNewBook = () => {
@@ -47,7 +51,7 @@ const AddNewBook = () => {
     }
 
     try {
-      let apiUrl = '/api'
+      let apiUrl = '/api/rest'
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -55,6 +59,11 @@ const AddNewBook = () => {
         },
         body: JSON.stringify(newBook),
       })
+
+      const data = await response.json();
+      setBookForm(
+        Array.isArray(data._embedded.buecher) ? data._embedded.buecher : []
+      );
 
       if (response.ok) {
         console.log('Buch erfolgreich hinzugefügt')
@@ -91,10 +100,12 @@ const AddNewBook = () => {
 
   return (
     <div>
+      <Grid container spacing={3}>
       <TableContainer>
         <Table>
           <TableBody>
             <TableRow>
+            <Grid item xs={12} sm={12}>
               <TableCell>ISBN:</TableCell>
               <TableCell>
                 <TextField
@@ -104,8 +115,10 @@ const AddNewBook = () => {
                   onChange={handleInputChange}
                 />
               </TableCell>
+              </Grid>
             </TableRow>
             <TableRow>
+            <Grid item xs={12} sm={12}>
               <TableCell>Titel:</TableCell>
               <TableCell>
                 <TextField
@@ -115,8 +128,10 @@ const AddNewBook = () => {
                   onChange={handleInputChange}
                 />
               </TableCell>
+              </Grid>
             </TableRow>
             <TableRow>
+            <Grid item xs={12} sm={12}>
               <TableCell>Rating:</TableCell>
               <TableCell>
                 <Rating
@@ -130,8 +145,10 @@ const AddNewBook = () => {
                   icon={<BookIcon />}
                 />
               </TableCell>
+              </Grid>
             </TableRow>
             <TableRow>
+            <Grid item xs={12} sm={12}>
               <TableCell>Art:</TableCell>
               <TableCell>
                 <Select
@@ -143,8 +160,10 @@ const AddNewBook = () => {
                   <MenuItem value="DRUCKAUSGABE">Druckausgabe</MenuItem>
                 </Select>
               </TableCell>
+              </Grid>
             </TableRow>
             <TableRow>
+            <Grid item xs={12} sm={12}>
               <TableCell>Datum:</TableCell>
               <TableCell>
                 <TextField
@@ -154,8 +173,10 @@ const AddNewBook = () => {
                   onChange={handleInputChange}
                 />
               </TableCell>
+              </Grid>
             </TableRow>
             <TableRow>
+            <Grid item xs={12} sm={12}>
               <TableCell>Preis:</TableCell>
               <TableCell>
                 <TextField
@@ -165,8 +186,10 @@ const AddNewBook = () => {
                   onChange={handleInputChange}
                 />
               </TableCell>
+              </Grid>
             </TableRow>
             <TableRow>
+            <Grid item xs={12} sm={12}>
               <TableCell>Rabatt:</TableCell>
               <TableCell>
                 <TextField
@@ -176,8 +199,10 @@ const AddNewBook = () => {
                   onChange={handleInputChange}
                 />
               </TableCell>
+              </Grid>
             </TableRow>
             <TableRow>
+            <Grid item xs={12} sm={12}>
               <TableCell>Lieferbar:</TableCell>
               <TableCell>
                 <RadioGroup
@@ -193,8 +218,10 @@ const AddNewBook = () => {
                   />
                 </RadioGroup>
               </TableCell>
+              </Grid>
             </TableRow>
             <TableRow>
+            <Grid item xs={12} sm={12}>
               <TableCell>Schlagwörter:</TableCell>
               <TableCell>
                 <FormControlLabel
@@ -218,13 +245,17 @@ const AddNewBook = () => {
                   label="TypeScript"
                 />
               </TableCell>
+            </Grid>
             </TableRow>
           </TableBody>
         </Table>
       </TableContainer>
+      <Grid>
       <Button variant="contained" onClick={handleAddNewBook}>
         Buch anlegen
       </Button>
+      </Grid>
+      </Grid>
     </div>
   )
 }
