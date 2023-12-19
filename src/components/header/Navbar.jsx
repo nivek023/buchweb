@@ -10,8 +10,53 @@ import { useAuth } from '../provider/useAuth'
 const Navbar = () => {
   const Grow = styled('div')({
     flexGrow: 1,
-  });
+  })
 
+  const [benutzer, setBenutzer] = useState('')
+  const [passwort, setPasswort] = useState('')
+  const navigate = useNavigate()
+  const { login, logout } = useAuth()
+  const [navbarColor, setNavbarColor] = useState('default')
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  const handleLogoClick = () => {
+    navigate('/')
+  }
+
+  const handleSearchClick = () => {
+    navigate('/search')
+  }
+
+  const handleAddClick = () => {
+    navigate('/add')
+  }
+  const handleLoginClick = async () => {
+    if (isLoggedIn) {
+      logout()
+      setIsLoggedIn(false)
+      console.log('Navbar.handleLoginClick: logged out')
+      return
+    }
+    try {
+      const successfulLogin = await login(benutzer, passwort)
+      setIsLoggedIn(successfulLogin)
+
+      console.log(
+        'Navbar.handleLoginClick: login executed, successfulLogin: ',
+        successfulLogin
+      )
+
+      if (successfulLogin) {
+        console.log('Login success')
+        setNavbarColor('success')
+      } else {
+        console.log('Login failed')
+        setNavbarColor('error')
+      }
+    } catch (error) {
+      console.error('Error during login:', error)
+    }
+  }
   useEffect(() => {
     if (navbarColor === 'error') {
       const timeout = setTimeout(() => {
@@ -27,57 +72,11 @@ const Navbar = () => {
     }
   }, [navbarColor])
 
-  const [benutzer, setBenutzer] = useState('');
-  const [passwort, setPasswort] = useState('');
-  const navigate = useNavigate();
-  const { login, logout } = useAuth();
-  const [navbarColor, setNavbarColor] = useState('default');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  const handleLogoClick = () => {
-    navigate('/');
-  }
-
-  const handleSearchClick = () => {
-    navigate('/search');
-  }
-
-  const handleAddClick = () => {
-    navigate('/add');
-  }
-  const handleLoginClick = async () => {
-    if (isLoggedIn) {
-      logout();
-      setIsLoggedIn(false);
-      console.log('Navbar.handleLoginClick: logged out');
-      return;
-    }
-    try {
-    const successfulLogin = await login(benutzer, passwort);
-    setIsLoggedIn(successfulLogin);
-
-    console.log(
-      'Navbar.handleLoginClick: login executed, successfulLogin: ',
-      successfulLogin
-    );
-
-    if (successfulLogin) {
-      console.log('Login success');
-      setNavbarColor('success');
-    } else {
-      console.log('Login failed');
-      setNavbarColor('error');
-    }
-  } catch (error) {
-    console.error('Error during login:', error);
-  }
-};
-
   return (
     <AppBar position="fixed" color={navbarColor}>
       <Toolbar>
         <Button onClick={handleLogoClick} color="inherit">
-          <BookIcon/>
+          <BookIcon />
         </Button>
         <Button onClick={handleSearchClick} variant="contained" color="primary">
           Erweiterte Suche <SearchIcon />
@@ -125,5 +124,5 @@ const Navbar = () => {
       </Toolbar>
     </AppBar>
   )
-};
-export default Navbar;
+}
+export default Navbar

@@ -35,7 +35,7 @@ const BookSearch = () => {
     setSearchError(false)
     setShowTable(true)
     try {
-      let apiUrl = '/api'
+      let apiUrl = '/api/rest'
       const searchParams = [
         { term: 'isbn', value: searchIsbn },
         { term: 'titel', value: searchTitel },

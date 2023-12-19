@@ -11,11 +11,11 @@ export const AuthProvider = ({ children }) => {
   const login = async (username, password) => {
     try {
       const response = await loginUser({ username, password })
-      console.log('AuthProvider.login: response:', response);
+      console.log('AuthProvider.login: response:', response)
       const { token, roles } = response.data
       setCToken(token)
-      console.log('AuthProvider.login: setToken executed');
-      console.log('AuthProvider.login: token: ', token);
+      console.log('AuthProvider.login: setToken executed')
+      console.log('AuthProvider.login: token: ', token)
       const isAdminOrFachabteilung = roles.some(
         (r) => r === 'admin' || r === 'fachabteilung'
       )
