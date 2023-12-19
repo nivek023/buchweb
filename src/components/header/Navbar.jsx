@@ -4,12 +4,21 @@ import { useNavigate } from 'react-router-dom'
 import SearchIcon from '@mui/icons-material/Search'
 import AddIcon from '@mui/icons-material/Add'
 import BookIcon from '@mui/icons-material/Book'
+import { useState, useEffect } from 'react'
+import { useAuth } from '../provider/useAuth'
 
 const Navbar = () => {
   const Grow = styled('div')({
     flexGrow: 1,
   })
+
+  const [benutzer, setBenutzer] = useState('')
+  const [passwort, setPasswort] = useState('')
   const navigate = useNavigate()
+  const { login, logout } = useAuth()
+  const [navbarColor, setNavbarColor] = useState('default')
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
   const handleLogoClick = () => {
     navigate('/')
   }
@@ -21,13 +30,50 @@ const Navbar = () => {
   const handleAddClick = () => {
     navigate('/add')
   }
+  const handleLoginClick = async () => {
+    if (isLoggedIn) {
+      logout()
+      setIsLoggedIn(false)
+      console.log('Navbar.handleLoginClick: logged out')
+      return
+    }
+    try {
+      const successfulLogin = await login(benutzer, passwort)
+      setIsLoggedIn(successfulLogin)
 
-  const handleLoginClick = () => {
-    navigate('/login')
+      console.log(
+        'Navbar.handleLoginClick: login executed, successfulLogin: ',
+        successfulLogin
+      )
+
+      if (successfulLogin) {
+        console.log('Login success')
+        setNavbarColor('success')
+      } else {
+        console.log('Login failed')
+        setNavbarColor('error')
+      }
+    } catch (error) {
+      console.error('Error during login:', error)
+    }
   }
+  useEffect(() => {
+    if (navbarColor === 'error') {
+      const timeout = setTimeout(() => {
+        setNavbarColor('default')
+      }, 220)
+      return () => clearTimeout(timeout)
+    }
+    if (navbarColor === 'success') {
+      const timeout = setTimeout(() => {
+        setNavbarColor('default')
+      }, 220)
+      return () => clearTimeout(timeout)
+    }
+  }, [navbarColor])
 
   return (
-    <AppBar position="fixed">
+    <AppBar position="fixed" color={navbarColor}>
       <Toolbar>
         <Button onClick={handleLogoClick} color="inherit">
           <BookIcon />
@@ -47,28 +93,36 @@ const Navbar = () => {
           />
         </Typography>
         <Grow />
-        <Typography variant="h6" component="div">
-          <TextField
-            id="navbar-benutzer"
-            label="Benutzer"
-            variant="outlined"
-            color="secondary"
-          />
-        </Typography>
-        <Typography variant="h6" component="div">
-          <TextField
-            id="navbar-passwort"
-            label="Passwort"
-            variant="outlined"
-            color="secondary"
-          />
-        </Typography>
+        {isLoggedIn ? null : (
+          <>
+            <Typography variant="h6" component="div">
+              <TextField
+                id="navbar-benutzer"
+                label="Benutzer"
+                variant="outlined"
+                color="secondary"
+                value={benutzer}
+                onChange={(e) => setBenutzer(e.target.value)}
+              />
+            </Typography>
+            <Typography variant="h6" component="div">
+              <TextField
+                id="navbar-passwort"
+                label="Passwort"
+                variant="outlined"
+                color="secondary"
+                type="password"
+                value={passwort}
+                onChange={(e) => setPasswort(e.target.value)}
+              />
+            </Typography>
+          </>
+        )}
         <Button onClick={handleLoginClick} color="inherit">
-          Login
+          {isLoggedIn ? 'Logout' : 'Login'}
         </Button>
       </Toolbar>
     </AppBar>
   )
 }
-    
-export default Navbar;
+export default Navbar
