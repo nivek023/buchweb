@@ -2,13 +2,31 @@ import { AppBar, Toolbar, Button, Typography, TextField } from '@mui/material'
 import { styled } from '@mui/system'
 import { useNavigate } from 'react-router-dom'
 import SearchIcon from '@mui/icons-material/Search'
+import AddIcon from '@mui/icons-material/Add'
+import BookIcon from '@mui/icons-material/Book'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../provider/useAuth'
 
 const Navbar = () => {
   const Grow = styled('div')({
     flexGrow: 1,
-  })
+  });
+
+  useEffect(() => {
+    if (navbarColor === 'error') {
+      const timeout = setTimeout(() => {
+        setNavbarColor('default')
+      }, 220)
+      return () => clearTimeout(timeout)
+    }
+    if (navbarColor === 'success') {
+      const timeout = setTimeout(() => {
+        setNavbarColor('default')
+      }, 220)
+      return () => clearTimeout(timeout)
+    }
+  }, [navbarColor])
+
   const [benutzer, setBenutzer] = useState('');
   const [passwort, setPasswort] = useState('');
   const navigate = useNavigate();
@@ -22,6 +40,10 @@ const Navbar = () => {
 
   const handleSearchClick = () => {
     navigate('/search');
+  }
+
+  const handleAddClick = () => {
+    navigate('/add');
   }
   const handleLoginClick = async () => {
     if (isLoggedIn) {
@@ -51,29 +73,17 @@ const Navbar = () => {
   }
 };
 
-  useEffect(() => {
-    if (navbarColor === 'error') {
-      const timeout = setTimeout(() => {
-        setNavbarColor('default')
-      }, 220)
-      return () => clearTimeout(timeout)
-    }
-    if (navbarColor === 'success') {
-      const timeout = setTimeout(() => {
-        setNavbarColor('default')
-      }, 220)
-      return () => clearTimeout(timeout)
-    }
-  }, [navbarColor])
-
   return (
     <AppBar position="fixed" color={navbarColor}>
       <Toolbar>
         <Button onClick={handleLogoClick} color="inherit">
-          BuchLogo
+          <BookIcon/>
         </Button>
         <Button onClick={handleSearchClick} variant="contained" color="primary">
           Erweiterte Suche <SearchIcon />
+        </Button>
+        <Button onClick={handleAddClick} variant="contained" color="primary">
+          Neues Buch <AddIcon />
         </Button>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
           <TextField
