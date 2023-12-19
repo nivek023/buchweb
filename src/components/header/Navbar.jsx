@@ -6,6 +6,7 @@ import AddIcon from '@mui/icons-material/Add'
 import BookIcon from '@mui/icons-material/Book'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../provider/useAuth'
+import Box from '@mui/material/Box';
 
 const Navbar = () => {
   const Grow = styled('div')({
@@ -61,13 +62,13 @@ const Navbar = () => {
     if (navbarColor === 'error') {
       const timeout = setTimeout(() => {
         setNavbarColor('default')
-      }, 220)
+      }, 260)
       return () => clearTimeout(timeout)
     }
     if (navbarColor === 'success') {
       const timeout = setTimeout(() => {
         setNavbarColor('default')
-      }, 220)
+      }, 260)
       return () => clearTimeout(timeout)
     }
   }, [navbarColor])
@@ -78,20 +79,14 @@ const Navbar = () => {
         <Button onClick={handleLogoClick} color="inherit">
           <BookIcon />
         </Button>
+        <Box sx={{ marginRight: 3 }} />
         <Button onClick={handleSearchClick} variant="contained" color="primary">
           Erweiterte Suche <SearchIcon />
         </Button>
+        <Box sx={{ marginRight: 1 }} />
         <Button onClick={handleAddClick} variant="contained" color="primary">
           Neues Buch <AddIcon />
         </Button>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          <TextField
-            id="navbar-suche"
-            label="Suche"
-            variant="outlined"
-            color="secondary"
-          />
-        </Typography>
         <Grow />
         {isLoggedIn ? null : (
           <>
@@ -118,7 +113,8 @@ const Navbar = () => {
             </Typography>
           </>
         )}
-        <Button onClick={handleLoginClick} color="inherit">
+        <Box sx={{ marginRight: 1 }} />
+        <Button onClick={handleLoginClick} variant="contained" color="primary">
           {isLoggedIn ? 'Logout' : 'Login'}
         </Button>
       </Toolbar>
