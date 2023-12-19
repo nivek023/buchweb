@@ -12,7 +12,7 @@ const Navbar = () => {
   const [benutzer, setBenutzer] = useState('');
   const [passwort, setPasswort] = useState('');
   const navigate = useNavigate();
-  const { login, logout, cToken } = useAuth();
+  const { login, logout } = useAuth();
   const [navbarColor, setNavbarColor] = useState('default');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
