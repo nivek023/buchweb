@@ -7,16 +7,19 @@ import BookIcon from '@mui/icons-material/Book'
 import { useState, useEffect } from 'react'
 import { useAuth } from '../provider/useAuth'
 import Box from '@mui/material/Box';
+import { useRef } from 'react';
 
 const Navbar = () => {
+  const pwdRef = useRef(null);
+  const loginRef = useRef(null);
   const Grow = styled('div')({
     flexGrow: 1,
   })
 
+  const { login, logout, role } = useAuth()
   const [benutzer, setBenutzer] = useState('')
   const [passwort, setPasswort] = useState('')
   const navigate = useNavigate()
-  const { login, logout } = useAuth()
   const [navbarColor, setNavbarColor] = useState('default')
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
@@ -35,6 +38,7 @@ const Navbar = () => {
     if (isLoggedIn) {
       logout()
       setIsLoggedIn(false)
+      setPasswort('')
       console.log('Navbar.handleLoginClick: logged out')
       return
     }
@@ -46,7 +50,6 @@ const Navbar = () => {
         'Navbar.handleLoginClick: login executed, successfulLogin: ',
         successfulLogin
       )
-
       if (successfulLogin) {
         console.log('Login success')
         setNavbarColor('success')
@@ -58,6 +61,14 @@ const Navbar = () => {
       console.error('Error during login:', error)
     }
   }
+
+  const handleEnterKeyPress = (event, nextFieldRef) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      nextFieldRef.current.focus();
+    }
+  }
+  
   useEffect(() => {
     if (navbarColor === 'error') {
       const timeout = setTimeout(() => {
@@ -77,14 +88,14 @@ const Navbar = () => {
     <AppBar position="fixed" color={navbarColor}>
       <Toolbar>
         <Button onClick={handleLogoClick} color="inherit">
-          <BookIcon />
+          <BookIcon sx={{ fontSize: 45 }} />
         </Button>
         <Box sx={{ marginRight: 3 }} />
         <Button onClick={handleSearchClick} variant="contained" color="primary">
           Erweiterte Suche <SearchIcon />
         </Button>
         <Box sx={{ marginRight: 1 }} />
-        <Button onClick={handleAddClick} variant="contained" color="primary">
+        <Button onClick={handleAddClick} variant="contained" color="primary" disabled={role !== 'write'}>
           Neues Buch <AddIcon />
         </Button>
         <Grow />
@@ -98,6 +109,8 @@ const Navbar = () => {
                 color="secondary"
                 value={benutzer}
                 onChange={(e) => setBenutzer(e.target.value)}
+                onKeyDown={(e) => handleEnterKeyPress(e, pwdRef)}
+                
               />
             </Typography>
             <Typography variant="h6" component="div">
@@ -108,13 +121,15 @@ const Navbar = () => {
                 color="secondary"
                 type="password"
                 value={passwort}
+                inputRef={pwdRef}
                 onChange={(e) => setPasswort(e.target.value)}
+                onKeyDown={(e) => handleEnterKeyPress(e, loginRef)}
               />
             </Typography>
           </>
         )}
         <Box sx={{ marginRight: 1 }} />
-        <Button onClick={handleLoginClick} variant="contained" color="primary">
+        <Button ref={loginRef} onClick={handleLoginClick} variant="contained" color="primary">
           {isLoggedIn ? 'Logout' : 'Login'}
         </Button>
       </Toolbar>

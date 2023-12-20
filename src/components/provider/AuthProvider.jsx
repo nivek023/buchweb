@@ -6,7 +6,7 @@ export const AuthContext = createContext(null)
 
 export const AuthProvider = ({ children }) => {
   const [cToken, setCToken] = useState('')
-  const [rolle, setRolle] = useState('lesen')
+  const [role, setRole] = useState('read')
 
   const login = async (username, password) => {
     try {
@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
       const isKunde = roles.includes('kunde')
 
       if (isAdminOrFachabteilung) {
-        setRolle('bearbeiten')
+        setRole('write')
         return true
       }
       if (isKunde) {
@@ -53,11 +53,11 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setCToken('')
-    setRolle('lesen')
+    setRole('read')
   }
 
   return (
-    <AuthContext.Provider value={{ cToken, rolle, login, logout }}>
+    <AuthContext.Provider value={{ cToken, role, login, logout }}>
       {children}
     </AuthContext.Provider>
   )
