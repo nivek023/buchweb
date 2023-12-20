@@ -1,4 +1,4 @@
-import { Check, Close, Search, Delete } from '@mui/icons-material'
+import { Check, Close, Search, Delete } from '@mui/icons-material';
 import {
   Button,
   Checkbox,
@@ -13,92 +13,92 @@ import {
   TextField,
   Typography,
   IconButton,
-} from '@mui/material'
-import { DataGrid } from '@mui/x-data-grid'
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+} from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const BookSearch = () => {
-  const [buchData, setBuchData] = useState([])
-  const [searchIsbn, setSearchIsbn] = useState('')
-  const [searchTitel, setSearchTitel] = useState('')
-  const [selectedOption, setSelectedOption] = useState('')
-  const [ratingOptions, setRatingOptions] = useState([])
-  const [isLieferbar, setIsLieferbar] = useState(false)
-  const [radioValue, setRadioValue] = useState('')
-  const [searchError, setSearchError] = useState(false)
-  const [showTable, setShowTable] = useState(false)
+  const [buchData, setBuchData] = useState([]);
+  const [searchIsbn, setSearchIsbn] = useState('');
+  const [searchTitel, setSearchTitel] = useState('');
+  const [selectedOption, setSelectedOption] = useState('');
+  const [ratingOptions, setRatingOptions] = useState([]);
+  const [isLieferbar, setIsLieferbar] = useState(false);
+  const [radioValue, setRadioValue] = useState('');
+  const [searchError, setSearchError] = useState(false);
+  const [showTable, setShowTable] = useState(false);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleSearch = async () => {
-    setSearchError(false)
-    setShowTable(true)
+    setSearchError(false);
+    setShowTable(true);
     try {
-      let apiUrl = '/api/rest'
+      let apiUrl = '/api/rest';
       const searchParams = [
         { term: 'isbn', value: searchIsbn },
         { term: 'titel', value: searchTitel },
         { term: 'rating', value: selectedOption },
         { term: 'lieferbar', value: isLieferbar },
         { term: 'art', value: radioValue },
-      ]
+      ];
       searchParams.forEach((param) => {
-        apiUrl = appendSearchTerm(apiUrl, param.term, param.value)
-      })
+        apiUrl = appendSearchTerm(apiUrl, param.term, param.value);
+      });
 
-      const response = await fetch(apiUrl)
+      const response = await fetch(apiUrl);
       if (!response.ok) {
-        throw new Error('Failed to fetch data')
+        throw new Error('Failed to fetch data');
       }
-      const data = await response.json()
+      const data = await response.json();
       setBuchData(
         Array.isArray(data._embedded.buecher) ? data._embedded.buecher : []
-      )
-      setSearchError(false)
+      );
+      setSearchError(false);
     } catch (error) {
-      console.error('Error fetching data:', error)
-      setSearchError(true)
+      console.error('Error fetching data:', error);
+      setSearchError(true);
     }
-  }
+  };
 
   function appendSearchTerm(apiUrl, searchTerm, searchValue) {
     return searchValue
       ? `${apiUrl}${
           apiUrl.includes('?') ? '&' : '?'
         }${searchTerm}=${searchValue}`
-      : apiUrl
+      : apiUrl;
   }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api')
+        const response = await fetch('/api');
         if (!response.ok) {
-          throw new Error('Failed to fetch ratings')
+          throw new Error('Failed to fetch ratings');
         }
-        const data = await response.json()
+        const data = await response.json();
         const ratings = [
           ...new Set(data._embedded.buecher.map((buch) => buch.rating)),
-        ]
-        setRatingOptions(ratings)
-        setSearchError(false)
+        ];
+        setRatingOptions(ratings);
+        setSearchError(false);
       } catch (error) {
-        console.error('Error fetching ratings:', error)
-        setSearchError(true)
+        console.error('Error fetching ratings:', error);
+        setSearchError(true);
       }
-    }
-    fetchData()
-  }, [])
+    };
+    fetchData();
+  }, []);
 
   const buchDataWithUniqueIsbn = buchData.map((buch) => ({
     ...buch,
     uniqueIsbn: buch.isbn,
-  }))
+  }));
 
   const navigateToDetails = (params) => {
-    navigate(`/details/${params.row.uniqueIsbn}`)
-  }
+    navigate(`/details/${params.row.uniqueIsbn}`);
+  };
 
   return (
     <div>
@@ -226,7 +226,7 @@ const BookSearch = () => {
                     <IconButton
                       aria-label="delete"
                       onClick={(event) => {
-                        event.stopPropagation()
+                        event.stopPropagation();
                         // Funktion zum Löschen
                       }}
                     >
@@ -246,7 +246,7 @@ const BookSearch = () => {
         ) : null}
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default BookSearch
+export default BookSearch;
