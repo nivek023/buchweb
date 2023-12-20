@@ -1,8 +1,3 @@
-
-
-const AddNewBook  = () => {
-
-  
-}
+const AddNewBook = () => {};
 
 export default AddNewBook;
