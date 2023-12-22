@@ -37,11 +37,25 @@ body {
   padding: 15px;
   color: white;
   z-index: 1000;
+  position: fixed;
+  margin-bottom: auto;
 }
 
 .navbar-container {
   max-width: 800px;
   width: 100%;
+  margin-bottom: auto;
+}
+
+.table-addBook {
+  display:block;
+  margin-top: auto;
+  width: 100%;
+}
+
+.textfield {
+  width: 100%;
+  margin: 16px;
 }
 
 
@@ -52,6 +66,7 @@ h1 {
 
 .navbar {
   display: flex;
+  padding: 5px;
   
 }
 
