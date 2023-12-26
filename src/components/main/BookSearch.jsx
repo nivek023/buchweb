@@ -19,6 +19,7 @@ import { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../provider/AuthProvider';
 import Box from '@mui/material/Box';
+import axios from 'axios';
 
 const BookSearch = () => {
   const [buchData, setBuchData] = useState([]);
@@ -58,6 +59,7 @@ const BookSearch = () => {
   const handleSearch = async () => {
     setSearchError(false);
     setShowTable(true);
+
     try {
       let apiUrl = '/api/rest';
       const searchParams = [
@@ -68,15 +70,18 @@ const BookSearch = () => {
         { term: 'typescript', value: isTypeScript },
         { term: 'art', value: radioValue },
       ];
+
       searchParams.forEach((param) => {
         apiUrl = appendSearchTerm(apiUrl, param.term, param.value);
       });
 
-      const response = await fetch(apiUrl);
-      if (!response.ok) {
+      const response = await axios.get(apiUrl);
+
+      if (response.status !== 200) {
         throw new Error('Failed to fetch data');
       }
-      const data = await response.json();
+
+      const data = response.data;
       setBuchData(
         Array.isArray(data._embedded.buecher) ? data._embedded.buecher : []
       );
@@ -86,7 +91,6 @@ const BookSearch = () => {
       setSearchError(true);
     }
   };
-
   function appendSearchTerm(apiUrl, searchTerm, searchValue) {
     return searchValue
       ? `${apiUrl}${
@@ -98,13 +102,17 @@ const BookSearch = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/rest');
-        if (!response.ok) {
+        const response = await axios.get('/api/rest');
+        if (response.status !== 200) {
           throw new Error('Failed to fetch ratings');
         }
-        const data = await response.json();
+        const data = response.data;
         const ratings = [
-          ...new Set(data._embedded.buecher.map((buch) => buch.rating)),
+          ...new Set(
+            data._embedded.buecher
+              .map((buch) => buch.rating)
+              .sort((a, b) => a - b)
+          ),
         ];
         setRatingOptions(ratings);
         setSearchError(false);

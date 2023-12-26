@@ -6,7 +6,7 @@ const BookDetailsForm = ({ book }) => {
   const bookRabattP = Math.round(book.rabatt * 100);
   const { id = 'default' } = useParams();
   const navigate = useNavigate();
-  const gridSpacer = <Grid item xs={6}/>;
+  const gridSpacer = <Grid item xs={6} />;
   const handleBtenClick = () => {
     navigate(`/edit/${id}`);
   };
@@ -45,7 +45,7 @@ const BookDetailsForm = ({ book }) => {
             Bearbeiten
           </Button>
         </Grid>
-        <Grid item xs={5}/>
+        <Grid item xs={5} />
         <Grid item xs={5}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
             <strong>Preis:</strong> {book.preis}€
@@ -56,7 +56,7 @@ const BookDetailsForm = ({ book }) => {
             Löschen
           </Button>
         </Grid>
-        <Grid item xs={5}/>
+        <Grid item xs={5} />
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
             <strong>Rabatt:</strong> {bookRabattP} %
