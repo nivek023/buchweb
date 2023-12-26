@@ -10,7 +10,7 @@ const BookDetails = () => {
   useEffect(() => {
     const fetchBook = async () => {
       const url = '/api/rest';
-      const request = `?isbn=${id}`;
+      const request = `?id=${id}`;
       try {
         const response = await axios.get(url + request);
         if (response.status !== 200) {
