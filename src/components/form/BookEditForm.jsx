@@ -62,11 +62,7 @@ const BookChangeForm = ({ book, etag }) => {
         headers: headers,
       });
 
-      if (
-        response.status === 200 ||
-        response.status === 201 ||
-        response.status === 204
-      ) {
+      if (response.status === 204) {
         navigate(`/edit/${id}`);
       } else {
         console.error('Error occurred during PUT request:', response);
