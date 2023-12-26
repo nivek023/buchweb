@@ -1,46 +1,86 @@
-import { Grid, Typography } from '@mui/material';
+import { Grid, Typography, Rating, Button } from '@mui/material';
 import PropTypes from 'prop-types';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const BookDetailsForm = ({ book }) => {
+  const bookRabattP = Math.round(book.rabatt * 100);
+  const { id = 'default' } = useParams();
+  const navigate = useNavigate();
+  const gridSpacer = <Grid item xs={6}/>;
+  const handleBtenClick = () => {
+    navigate(`/edit/${id}`);
+  };
   return (
     <div>
-      <Grid container spacing={3}>
+      <Grid container spacing={4}>
         <Grid item xs={12}>
-          <Typography variant="h4" gutterBottom>
-            Titel: {book.titel.titel}
+          <Typography variant="h5" gutterBottom>
+            Buchtitel: {book.titel.titel}
           </Typography>
         </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h6">ISBN: {book.isbn}</Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h6">Rating: {book.rating}</Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h6">Art: {book.art}</Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h6">Preis: {book.preis}</Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h6">Rabatt: {book.rabatt}</Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h6">
-            Lieferbar: {book.lieferbar ? 'Ja' : 'Nein'}
+        <Grid item xs={6}>
+          <Typography variant="body1" style={{ textAlign: 'left' }}>
+            <strong>ISBN:</strong> {book.isbn}
           </Typography>
         </Grid>
+        {gridSpacer}
         <Grid item xs={12}>
-          <Typography variant="h6">Datum: {book.datum}</Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h6">Homepage: {book.homepage}</Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h6">
-            Schlagwörter: {book.schlagwoerter.join(', ')}
+          <Typography variant="body1" style={{ textAlign: 'left' }}>
+            <Rating name="read-only" value={book.rating} readOnly />
           </Typography>
         </Grid>
+        <Grid item xs={6}>
+          <Typography variant="body1" style={{ textAlign: 'left' }}>
+            Buch kann {book.lieferbar ? '' : 'leider nicht'} geliefert werden
+          </Typography>
+        </Grid>
+        {gridSpacer}
+        <Grid item xs={5}>
+          <Typography variant="body1" style={{ textAlign: 'left' }}>
+            <strong>Art:</strong> {book.art}
+          </Typography>
+        </Grid>
+        <Grid item xs={2} style={{ textAlign: 'center' }}>
+          <Button variant="contained" color="primary" onClick={handleBtenClick}>
+            Bearbeiten
+          </Button>
+        </Grid>
+        <Grid item xs={5}/>
+        <Grid item xs={5}>
+          <Typography variant="body1" style={{ textAlign: 'left' }}>
+            <strong>Preis:</strong> {book.preis}€
+          </Typography>
+        </Grid>
+        <Grid item xs={2} style={{ textAlign: 'center' }}>
+          <Button variant="contained" color="primary">
+            Löschen
+          </Button>
+        </Grid>
+        <Grid item xs={5}/>
+        <Grid item xs={6}>
+          <Typography variant="body1" style={{ textAlign: 'left' }}>
+            <strong>Rabatt:</strong> {bookRabattP} %
+          </Typography>
+        </Grid>
+        {gridSpacer}
+        <Grid item xs={6}>
+          <Typography variant="body1" style={{ textAlign: 'left' }}>
+            <strong>Datum:</strong> {book.datum}
+          </Typography>
+        </Grid>
+        {gridSpacer}
+        <Grid item xs={6}>
+          <Typography variant="body1" style={{ textAlign: 'left' }}>
+            <strong>Homepage:</strong> {book.homepage}
+          </Typography>
+        </Grid>
+        {gridSpacer}
+        <Grid item xs={6}>
+          <Typography variant="body1" style={{ textAlign: 'left' }}>
+            <strong>Schlagwörter:</strong> {book.schlagwoerter.join(', ')}
+          </Typography>
+        </Grid>
+        {gridSpacer}
       </Grid>
     </div>
   );
