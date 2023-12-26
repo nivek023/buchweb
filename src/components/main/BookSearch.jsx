@@ -130,8 +130,6 @@ const BookSearch = () => {
     id: getIdFromLinks(buch._links),
   }));
 
-  console.log(buchDataWithUniqueId);
-
   const navigateToDetails = (params) => {
     navigate(`/details/${params.row.id}`);
   };

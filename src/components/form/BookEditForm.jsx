@@ -63,7 +63,7 @@ const BookChangeForm = ({ book, etag }) => {
       });
 
       if (response.status === 204) {
-        navigate(`/edit/${id}`);
+        navigate(`/details/${id}`);
       } else {
         console.error('Error occurred during PUT request:', response);
       }
@@ -144,7 +144,7 @@ const BookChangeForm = ({ book, etag }) => {
         <Grid item xs={12}>
           <TextField
             name="preis"
-            label="Prais"
+            label="Preis"
             variant="outlined"
             value={editedBook.preis}
             onChange={handleInputChange}
