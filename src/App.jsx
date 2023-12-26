@@ -5,6 +5,7 @@ import Home from './components/main/Home';
 import Add from './components/main/AddNewBook';
 import Search from './components/main/BookSearch';
 import Details from './components/main/BookDetails';
+import BookEdit from './components/main/BookEdit';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
             <Route path="/add" element={<Add />} />
             <Route path="/search" element={<Search />} />
             <Route path="/details/:id" element={<Details />} />
+            <Route path="/edit/:id" element={<BookEdit />} />
           </Routes>
         </div>
       </div>
