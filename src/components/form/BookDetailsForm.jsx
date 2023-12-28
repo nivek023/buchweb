@@ -11,6 +11,13 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
   const navigate = useNavigate();
   const gridSpacer = <Grid item xs={6} />;
   const isMobile = useMediaQuery('(max-width:400px)');
+  const exists = (value) => {
+    return value !== null && value !== undefined && value !== '' && value !== 'null';
+  };
+  const renderNullableValue = (value) => {
+    console.log(value);
+    return exists(value) ? value : 'N/A';
+  };
   const handleBtenClick = () => {
     navigate(`/edit/${id}`);
   };
@@ -39,7 +46,11 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
         </Grid>
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
-            Buch kann {book.lieferbar ? '' : 'leider nicht'} geliefert werden
+            {exists(book.lieferbar)
+              ? `Buch kann ${
+                  book.lieferbar ? '' : 'leider nicht'
+                } geliefert werden`
+              : `Lieferstatus unbekannt`}
           </Typography>
         </Grid>
         {gridSpacer}
@@ -48,7 +59,7 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
             variant="body1"
             style={{ textAlign: 'left', marginRight: '20px' }}
           >
-            <strong>Art:</strong> {book.art}
+            <strong>Art:</strong> {renderNullableValue(book.art)}
           </Typography>
         </Grid>
         <Grid item xs={2} style={{ textAlign: 'center' }}>
@@ -84,28 +95,35 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
         <Grid item xs={5} />
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
-            <strong>Rabatt:</strong> {bookRabattP}%
+            <strong>Rabatt:</strong>{' '}
+            {exists(book.rabatt) ? `${bookRabattP}%` : 'N/A'}
           </Typography>
         </Grid>
         {gridSpacer}
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
-            <strong>Datum:</strong> {formatDate(book.datum)}
+            <strong>Datum:</strong>{' '}
+            {renderNullableValue(formatDate(book.datum))}
           </Typography>
         </Grid>
         {gridSpacer}
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
             <strong>Homepage: </strong>
-            <a href={book.homepage} target="_blank" rel="noopener noreferrer">
-              {book.homepage}
-            </a>
+            {exists(book.homepage) ? (
+              <a href={book.homepage} target="_blank" rel="noopener noreferrer">
+                {book.homepage}
+              </a>
+            ) : (
+              'N/A'
+            )}
           </Typography>
         </Grid>
         {gridSpacer}
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
-            <strong>Schlagwörter:</strong> {book.schlagwoerter.join(', ')}
+            <strong>Schlagwörter:</strong>{' '}
+            {exists(book.schlagwoerter[0]) ? book.schlagwoerter.join(', ') : 'N/A'}
           </Typography>
         </Grid>
         {gridSpacer}
