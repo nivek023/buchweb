@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { useNavigate, useParams } from 'react-router-dom';
 import { formatDate, formatPreis } from './internatUtil';
 
-const BookDetailsForm = ({ book }) => {
+const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
   const bookRabattP = Math.round(book.rabatt * 100);
   const { id = 'default' } = useParams();
   const navigate = useNavigate();
@@ -13,6 +13,10 @@ const BookDetailsForm = ({ book }) => {
   const handleBtenClick = () => {
     navigate(`/edit/${id}`);
   };
+  const handleDeleteClick = () => {
+    deleteBook(id);
+    navigate('/');
+  }
   return (
     <div>
       <Grid container spacing={4}>
@@ -44,7 +48,7 @@ const BookDetailsForm = ({ book }) => {
           </Typography>
         </Grid>
         <Grid item xs={2} style={{ textAlign: 'center' }}>
-          <Button variant="contained" color="primary" onClick={handleBtenClick}>
+          <Button variant="contained" color="primary" onClick={handleBtenClick} disabled={!writeAccess}>
             <EditIcon />
           </Button>
         </Grid>
@@ -55,7 +59,7 @@ const BookDetailsForm = ({ book }) => {
           </Typography>
         </Grid>
         <Grid item xs={2} style={{ textAlign: 'center' }}>
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" onClick={handleDeleteClick} disabled={!writeAccess}>
             <DeleteIcon/>
           </Button>
         </Grid>
@@ -99,9 +103,9 @@ BookDetailsForm.propTypes = {
     isbn: PropTypes.string.isRequired,
     rating: PropTypes.number.isRequired,
     art: PropTypes.string.isRequired,
-    preis: PropTypes.string.isRequired,
-    rabatt: PropTypes.string.isRequired,
-    lieferbar: PropTypes.oneOf(['ja', 'nein']).isRequired,
+    preis: PropTypes.number.isRequired,
+    rabatt: PropTypes.number.isRequired,
+    lieferbar: PropTypes.bool.isRequired,
     datum: PropTypes.string.isRequired,
     homepage: PropTypes.string.isRequired,
     schlagwoerter: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -110,4 +114,6 @@ BookDetailsForm.propTypes = {
       untertitel: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
+  deleteBook: PropTypes.func.isRequired,
+  writeAccess: PropTypes.bool.isRequired,
 };

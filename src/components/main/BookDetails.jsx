@@ -1,12 +1,13 @@
 import BookDetailsForm from '../form/BookDetailsForm';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useAuth } from '../provider/useAuth';
 import axios from 'axios';
 
 const BookDetails = () => {
   const [book, setBook] = useState(null);
   const { id = 'default' } = useParams();
-
+  const {cToken, writeAccess} = useAuth();
   useEffect(() => {
     const fetchBook = async () => {
       const url = '/api/rest';
@@ -28,14 +29,34 @@ const BookDetails = () => {
     fetchBook();
   }, [id]);
 
+  const deleteBook= (id) => {
+    const headers = {
+      Authorization: `Bearer ${cToken}`,
+      'Content-Type': 'application/hal',
+    };
+    console.log(`BookDetails.deleteBook token: ${cToken}`)
+    const url = '/api/rest/';
+    const request = `${id}`;
+    axios
+      .delete(url + request, {headers})
+      .then((response) => {
+        if (response.status !== 204) {
+          throw new Error('BookDetails.deleteBook: Kein 204 Status-Code');
+        }
+        setBook(null);
+      })
+      .catch((error) => {
+        console.error('BookDetails.deleteBook:', error.message);
+      });
+  };
+
   if (!book) {
     return <div>Loading...</div>;
   }
-
   return (
     <div>
       <h2>Details</h2>
-      <BookDetailsForm book={book} />
+      <BookDetailsForm book={book} deleteBook={deleteBook} writeAccess={writeAccess} />
     </div>
   );
 };
