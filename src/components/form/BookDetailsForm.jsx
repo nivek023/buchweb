@@ -1,6 +1,9 @@
 import { Grid, Typography, Rating, Button } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import PropTypes from 'prop-types';
 import { useNavigate, useParams } from 'react-router-dom';
+import { formatDate, formatPreis } from './internatUtil';
 
 const BookDetailsForm = ({ book }) => {
   const bookRabattP = Math.round(book.rabatt * 100);
@@ -42,36 +45,39 @@ const BookDetailsForm = ({ book }) => {
         </Grid>
         <Grid item xs={2} style={{ textAlign: 'center' }}>
           <Button variant="contained" color="primary" onClick={handleBtenClick}>
-            Bearbeiten
+            <EditIcon />
           </Button>
         </Grid>
         <Grid item xs={5} />
         <Grid item xs={5}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
-            <strong>Preis:</strong> {book.preis}€
+            <strong>Preis:</strong> {formatPreis(book.preis)}€
           </Typography>
         </Grid>
         <Grid item xs={2} style={{ textAlign: 'center' }}>
           <Button variant="contained" color="primary">
-            Löschen
+            <DeleteIcon/>
           </Button>
         </Grid>
         <Grid item xs={5} />
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
-            <strong>Rabatt:</strong> {bookRabattP} %
+            <strong>Rabatt:</strong> {bookRabattP}%
           </Typography>
         </Grid>
         {gridSpacer}
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
-            <strong>Datum:</strong> {book.datum}
+            <strong>Datum:</strong> {formatDate(book.datum)}
           </Typography>
         </Grid>
         {gridSpacer}
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
-            <strong>Homepage:</strong> {book.homepage}
+            <strong>Homepage: </strong> 
+            <a href={book.homepage} target="_blank" rel="noopener noreferrer">
+            {book.homepage} 
+            </a>
           </Typography>
         </Grid>
         {gridSpacer}
