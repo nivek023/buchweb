@@ -1,105 +1,85 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import axios from 'axios';
-import { useAuth } from '../provider/useAuth';
-import { useNavigate } from 'react-router-dom';
 import AddNewBookForm from '../form/AddNewBookForm';
+import { AuthContext } from '../provider/AuthProvider';
 
 const AddNewBook = () => {
-  const [addNewBookForm, setAddBookForm] = useState({
+  const [addNewBook, setAddNewBook] = useState({
     isbn: '',
-    titel: '',
     rating: 0,
     art: '',
-    datum: new Date().toISOString().split('T')[0], // Format: YYYY-MM-DD
     preis: '',
     rabatt: '',
     lieferbar: 'ja',
-    javascript: false,
-    typescript: false,
+    datum: new Date().toISOString().split('T')[0],
+    homepage: '',
+    titel: {
+      titel: '',
+      untertitel: '' | undefined,
+    },
+    schlagwoerter: {
+      javascript: '',
+      typescript: '',
+    },
   });
 
-  const { cToken } = useAuth();
+  const { cToken } = useContext(AuthContext);
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
   const handleAddNewBook = async () => {
-    const newBook = {
-      id: undefined,
-      version: 0,
-      isbn: addNewBookForm.isbn,
-      titel: addNewBookForm.titel,
-      rating: Number(addNewBookForm.rating),
-      art: addNewBookForm.art,
-      datum: addNewBookForm.datum,
-      preis: addNewBookForm.preis,
-      rabatt:
-        addNewBookForm.rabatt === '' ? 0 : Number(addNewBookForm.rabatt) / 100,
-      lieferbar: addNewBookForm.lieferbar === 'ja',
-      schlagwoerter: (addNewBookForm.javascript ? ['JAVASCRIPT'] : []).concat(
-        addNewBookForm.typescript ? ['TYPESCRIPT'] : []
-      ),
-    };
-
     try {
       const headers = {
         Authorization: `Bearer ${cToken}`,
-        'Content-Type': 'application/hal',
+        'Content-Type': 'application/json',
       };
 
-      const response = await axios.post('/api/rest', addNewBookForm, {
+      const response = await axios.post('/api/rest', addNewBook, {
         headers,
       });
 
-      if (response.status === 201) {
-        setSuccess(true);
-        setError(null);
-        const bookSearchComponent = document.getElementById('search');
-        if (bookSearchComponent) {
-          bookSearchComponent.fetchData();
-        }
-        navigate('/search');
-      } else {
+      if (!addNewBook.isbn || !addNewBook.titel.titel) {
+        setSuccess(false);
+        setError('Bitte fülle alle erforderlichen Felder aus.');
+        return;
+      }
+
+      console.log('Server Response:', response);
+      if (response.status !== 201) {
         setSuccess(false);
         setError(`Fehler beim Hinzufügen des Buchs: ${response.statusText}`);
+      } else if (response.data) {
+        setSuccess(true);
+        setError(false);
       }
     } catch (error) {
       setSuccess(false);
       setError(`Fehler beim Hinzufügen des Buchs: ${error.message}`);
     }
 
-    console.log('Neues Buch:', newBook);
-
-    setAddBookForm({
-      isbn: '',
-      titel: '',
-      rating: 0,
-      art: '',
-      datum: new Date().toISOString().split('T')[0],
-      preis: '',
-      rabatt: '',
-      lieferbar: 'ja',
-      javascript: false,
-      typescript: false,
-    });
+    console.log('Neues Buch:', addNewBook);
   };
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setAddBookForm((prevForm) => ({
-      ...prevForm,
+    setAddNewBook ({
+      ...addNewBook,
       [name]: type === 'checkbox' ? checked : value,
-    }));
+    });
   };
 
+  console.log('Neues Buch erstellt: ' , AddNewBookForm)
+
   return (
-    <AddNewBookForm
-      addNewBookForm={addNewBookForm}
-      handleInputChange={handleInputChange}
-      handleAddNewBook={handleAddNewBook}
-      success={success}
-      error={error}
-    />
+    <div>
+      <AddNewBookForm
+        addNewBook={addNewBook}
+        handleInputChange={handleInputChange}
+        handleAddNewBook={handleAddNewBook}
+        success={success}
+        error={error}
+      />
+    </div>
   );
 };
 
