@@ -1,6 +1,5 @@
 import {
   TextField,
-  Checkbox,
   FormControlLabel,
   Grid,
   Radio,
@@ -11,43 +10,102 @@ import {
   Button,
 } from '@mui/material';
 import BookIcon from '@mui/icons-material/Book';
+import { useContext, useState } from 'react';
 import { styled } from '@mui/system';
-import PropTypes from 'prop-types';
+import axios from 'axios';
+import { AuthContext } from '../provider/AuthProvider';
 
 
-const AddNewBookForm = ({
-  addNewBook,
-  handleInputChange,
-  handleAddNewBook,
-  success,
-  error,
-}) => {
+const Table = styled('table')({
+  width: '75%',
+  display: 'relative',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  margin: '0',
+  flexWrap: 'wrap',
+});
 
-  const Table = styled('table')({
-    width: '75%',
-    display: 'relative',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    margin: '0',
-    flexWrap: 'wrap',
+const TableRow = styled('tr')({
+  display: 'flex',
+  flexDirection: 'row',
+  width: '100%',
+  height: 'auto',
+});
+
+const TableCell = styled('td')({
+  border: '5px solid #ddd',
+  padding: '8px',
+  flex: 3,
+  width: 'auto',
+  height: 'auto',
+  minWidth: '50%',
+});
+const AddNewBookForm = () => {
+  const { cToken } = useContext(AuthContext);
+  const [editedBook, setEditedBook] = useState({
+    isbn: '978-0-007-00644-1',
+    rating: 0,
+    art: '',
+    preis: '',
+    rabatt: '',
+    lieferbar: 'ja',
+    datum: new Date().toISOString().split('T')[0],
+    homepage: '',
+    titel: {
+      titel: 'hallo',
+      untertitel: 'welt',
+    },
+    schlagwoerter: 
+      ['JAVASCRIPT']
+    ,
   });
-  
-  const TableRow = styled('tr')({
-    display: 'flex',
-    flexDirection: 'row',
-    width: '100%',
-    height: 'auto',
-  });
-  
-  const TableCell = styled('td')({
-    border: '5px solid #ddd',
-    padding: '8px',
-    flex: 3,
-    width: 'auto',
-    height: 'auto',
-    minWidth: '50%',
-  });
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setEditedBook({
+      ...editedBook,
+      [name]: value,
+    });
+  };
+  const handleBtenClick = async () => {
+    const url = '/api/rest';
+
+    if (!cToken) {
+      throw new Error('No token available');
+    }
+
+    const headers = {
+      Authorization: `Bearer ${cToken}`,
+      'Content-Type': 'application/json',
+    };
+
+    const bookDTO = {
+      isbn: editedBook.isbn,
+      rating: parseInt(editedBook.rating, 10),
+      art: editedBook.art,
+      preis: parseFloat(editedBook.preis),
+      rabatt: parseFloat(editedBook.rabatt),
+      lieferbar: (editedBook.lieferbar === true),
+      datum: editedBook.datum,
+      homepage: editedBook.homepage,
+      schlagwoerter: editedBook.schlagwoerter,
+      titel: editedBook.titel,
+    };
+
+    try {
+      const response = await axios.post(url, bookDTO, {
+        headers: headers,
+      });
+
+      if (response.status === 204) {
+        return;
+      } else {
+        console.error('Error occurred during PUT request:', response);
+      }
+    } catch (error) {
+      console.error('Error occurred during PUT request:', error.message);
+    }
+  };
 
 
   return (
@@ -65,7 +123,7 @@ const AddNewBookForm = ({
                 <TextField
                   type="text"
                   name="isbn"
-                  value={addNewBook.isbn}
+                  value={editedBook.isbn}
                   onChange={handleInputChange}
                   fullWidth
                 />
@@ -77,16 +135,15 @@ const AddNewBookForm = ({
                 <TextField
                   type="text"
                   name="titel"
-                  value={addNewBook.titel.titel}
+                  value={editedBook.titel.titel}
                   onChange={handleInputChange}
                   placeholder="Titel"
                   fullWidth
                 />
-                {console.log('addNewBook:', addNewBook)}
                 <TextField
                   type="text"
                   name="untertitel"
-                  value={addNewBook.titel.untertitel || undefined}
+                  value={editedBook.titel.untertitel || undefined}
                   onChange={handleInputChange}
                   placeholder="Untertitel"
                   fullWidth
@@ -98,7 +155,7 @@ const AddNewBookForm = ({
               <TableCell>
                 <Rating
                   name="rating"
-                  value={addNewBook.rating}
+                  value={editedBook.rating}
                   onChange={handleInputChange}
                   icon={<BookIcon />}
                   fullWidth
@@ -110,7 +167,7 @@ const AddNewBookForm = ({
               <TableCell>
                 <Select
                   name="art"
-                  value={addNewBook.art}
+                  value={editedBook.art}
                   onChange={handleInputChange}
                   fullWidth
                 >
@@ -125,7 +182,7 @@ const AddNewBookForm = ({
                 <TextField
                   type="date"
                   name="datum"
-                  value={addNewBook.datum}
+                  value={editedBook.datum}
                   onChange={handleInputChange}
                   fullWidth
                 />
@@ -137,7 +194,7 @@ const AddNewBookForm = ({
                 <TextField
                   type="text"
                   name="preis"
-                  value={addNewBook.preis}
+                  value={editedBook.preis}
                   onChange={handleInputChange}
                   fullWidth
                 />
@@ -149,7 +206,7 @@ const AddNewBookForm = ({
                 <TextField
                   type="text"
                   name="rabatt"
-                  value={addNewBook.rabatt}
+                  value={editedBook.rabatt}
                   onChange={handleInputChange}
                   fullWidth
                 />
@@ -160,13 +217,13 @@ const AddNewBookForm = ({
               <TableCell>
                 <RadioGroup
                   name="lieferbar"
-                  value={addNewBook.lieferbar}
+                  value={editedBook.lieferbar}
                   onChange={handleInputChange}
                   fullWidth
                 >
-                  <FormControlLabel value="ja" control={<Radio />} label="Ja" />
+                  <FormControlLabel value="true" control={<Radio />} label="Ja" />
                   <FormControlLabel
-                    value="nein"
+                    value="false"
                     control={<Radio />}
                     label="Nein"
                   />
@@ -179,7 +236,7 @@ const AddNewBookForm = ({
                 <TextField
                   type="text"
                   name="homepage"
-                  value={addNewBook.homepage}
+                  value={editedBook.homepage}
                   onChange={handleInputChange}
                   fullWidth
                 />
@@ -187,65 +244,19 @@ const AddNewBookForm = ({
             </TableRow>
             <TableRow>
               <TableCell>Schlagwörter: </TableCell>
-              <TableCell>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      name="javascript"
-                      checked={addNewBook.schlagwoerter.javascript}
-                      onChange={handleInputChange}
-                    />
-                  }
-                  label="JavaScript"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      name="typescript"
-                      checked={addNewBook.schlagwoerter.typescript}
-                      onChange={handleInputChange}
-                    />
-                  }
-                  label="TypeScript"
-                />
-              </TableCell>
             </TableRow>
           </Table>
           <Button
-            variant="contained"
-            style={{ alignItems: 'center', width: 'auto' }}
-            onClick={handleAddNewBook}
-          >
-            Buch anlegen
-          </Button>
-          {success && <p style={{ color: 'green' }}>{success}</p>}
-          {error && <p style={{ color: 'red' }}>{error}</p>}
+      variant="contained"
+      style={{ alignItems: 'center', width: 'auto' }}
+      onClick={handleBtenClick}
+    >
+      Buch anlegen
+    </Button>
         </Grid>
       </div>
     )
   );
-};
-
-AddNewBookForm.propTypes = {
-  addNewBook: PropTypes.shape({
-    isbn: PropTypes.string.isRequired,
-    rating: PropTypes.number.isRequired,
-    art: PropTypes.string.isRequired,
-    preis: PropTypes.string.isRequired,
-    rabatt: PropTypes.string.isRequired,
-    lieferbar: PropTypes.oneOf(['ja', 'nein']).isRequired,
-    datum: PropTypes.string.isRequired,
-    homepage: PropTypes.string.isRequired,
-    schlagwoerter: PropTypes.arrayOf(PropTypes.string).isRequired,
-    titel: PropTypes.shape({
-      titel: PropTypes.string.isRequired,
-      untertitel: PropTypes.string.isRequired,
-    }).isRequired,
-  }).isRequired,
-  handleInputChange: PropTypes.func.isRequired,
-  handleAddNewBook: PropTypes.func.isRequired,
-  success: PropTypes.bool,
-  error: PropTypes.string,
 };
 
 export default AddNewBookForm;
