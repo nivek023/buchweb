@@ -17,7 +17,7 @@ const Navbar = () => {
     flexGrow: 1,
   });
 
-  const { login, logout, role } = useAuth();
+  const { login, logout, writeAccess } = useAuth();
   const [benutzer, setBenutzer] = useState('');
   const [passwort, setPasswort] = useState('');
   const navigate = useNavigate();
@@ -121,7 +121,7 @@ const Navbar = () => {
                 onClick={handleAddClick}
                 variant="contained"
                 color="primary"
-                disabled={role !== 'write'}
+                disabled={!writeAccess}
               >
                 Neues Buch <AddIcon />
               </Button>
@@ -177,7 +177,7 @@ const Navbar = () => {
             <ListItem button onClick={() => handleDrawerItemClick('/search')}>
               <ListItemText primary="Erweiterte Suche" />
             </ListItem>
-            <ListItem button onClick={() => handleDrawerItemClick('/add')} disabled={role !== 'write'}>
+            <ListItem button onClick={() => handleDrawerItemClick('/add')} disabled={!writeAccess}>
               <ListItemText primary="Neues Buch" />
             </ListItem>
           </List>

@@ -1,17 +1,29 @@
-import { Grid, Typography, Rating, Button } from '@mui/material';
+import { Grid, Typography, Rating, Button, useMediaQuery } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PropTypes from 'prop-types';
 import { useNavigate, useParams } from 'react-router-dom';
 import { formatDate, formatPreis } from './internatUtil';
 
-const BookDetailsForm = ({ book }) => {
+const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
   const bookRabattP = Math.round(book.rabatt * 100);
   const { id = 'default' } = useParams();
   const navigate = useNavigate();
   const gridSpacer = <Grid item xs={6} />;
+  const isMobile = useMediaQuery('(max-width:400px)');
+  const exists = (value) => {
+    return value !== null && value !== undefined && value !== '' && value !== 'null';
+  };
+  const renderNullableValue = (value) => {
+    console.log(value);
+    return exists(value) ? value : 'N/A';
+  };
   const handleBtenClick = () => {
     navigate(`/edit/${id}`);
+  };
+  const handleDeleteClick = () => {
+    deleteBook(id);
+    navigate('/');
   };
   return (
     <div>
@@ -34,19 +46,33 @@ const BookDetailsForm = ({ book }) => {
         </Grid>
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
-            Buch kann {book.lieferbar ? '' : 'leider nicht'} geliefert werden
+            {exists(book.lieferbar)
+              ? `Buch kann ${
+                  book.lieferbar ? '' : 'leider nicht'
+                } geliefert werden`
+              : `Lieferstatus unbekannt`}
           </Typography>
         </Grid>
         {gridSpacer}
         <Grid item xs={5}>
-          <Typography variant="body1" style={{ textAlign: 'left' }}>
-            <strong>Art:</strong> {book.art}
+          <Typography
+            variant="body1"
+            style={{ textAlign: 'left', marginRight: '20px' }}
+          >
+            <strong>Art:</strong> {renderNullableValue(book.art)}
           </Typography>
         </Grid>
         <Grid item xs={2} style={{ textAlign: 'center' }}>
-          <Button variant="contained" color="primary" onClick={handleBtenClick}>
-            <EditIcon />
-          </Button>
+          {!isMobile && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleBtenClick}
+              disabled={!writeAccess}
+            >
+              <EditIcon />
+            </Button>
+          )}
         </Grid>
         <Grid item xs={5} />
         <Grid item xs={5}>
@@ -55,38 +81,77 @@ const BookDetailsForm = ({ book }) => {
           </Typography>
         </Grid>
         <Grid item xs={2} style={{ textAlign: 'center' }}>
-          <Button variant="contained" color="primary">
-            <DeleteIcon/>
-          </Button>
+          {!isMobile && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleDeleteClick}
+              disabled={!writeAccess}
+            >
+              <DeleteIcon />
+            </Button>
+          )}
         </Grid>
         <Grid item xs={5} />
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
-            <strong>Rabatt:</strong> {bookRabattP}%
+            <strong>Rabatt:</strong>{' '}
+            {exists(book.rabatt) ? `${bookRabattP}%` : 'N/A'}
           </Typography>
         </Grid>
         {gridSpacer}
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
-            <strong>Datum:</strong> {formatDate(book.datum)}
+            <strong>Datum:</strong>{' '}
+            {renderNullableValue(formatDate(book.datum))}
           </Typography>
         </Grid>
         {gridSpacer}
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
-            <strong>Homepage: </strong> 
-            <a href={book.homepage} target="_blank" rel="noopener noreferrer">
-            {book.homepage} 
-            </a>
+            <strong>Homepage: </strong>
+            {exists(book.homepage) ? (
+              <a href={book.homepage} target="_blank" rel="noopener noreferrer">
+                {book.homepage}
+              </a>
+            ) : (
+              'N/A'
+            )}
           </Typography>
         </Grid>
         {gridSpacer}
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
-            <strong>Schlagwörter:</strong> {book.schlagwoerter.join(', ')}
+            <strong>Schlagwörter:</strong>{' '}
+            {exists(book.schlagwoerter[0]) ? book.schlagwoerter.join(', ') : 'N/A'}
           </Typography>
         </Grid>
         {gridSpacer}
+        <Grid item xs={6}>
+          {isMobile && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleBtenClick}
+              disabled={!writeAccess}
+            >
+              <EditIcon />
+            </Button>
+          )}
+        </Grid>
+        {gridSpacer}
+        <Grid item xs={6}>
+          {isMobile && (
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleDeleteClick}
+              disabled={!writeAccess}
+            >
+              <DeleteIcon />
+            </Button>
+          )}
+        </Grid>
       </Grid>
     </div>
   );
@@ -99,9 +164,9 @@ BookDetailsForm.propTypes = {
     isbn: PropTypes.string.isRequired,
     rating: PropTypes.number.isRequired,
     art: PropTypes.string.isRequired,
-    preis: PropTypes.string.isRequired,
-    rabatt: PropTypes.string.isRequired,
-    lieferbar: PropTypes.oneOf(['ja', 'nein']).isRequired,
+    preis: PropTypes.number.isRequired,
+    rabatt: PropTypes.number.isRequired,
+    lieferbar: PropTypes.bool.isRequired,
     datum: PropTypes.string.isRequired,
     homepage: PropTypes.string.isRequired,
     schlagwoerter: PropTypes.arrayOf(PropTypes.string).isRequired,
@@ -110,4 +175,6 @@ BookDetailsForm.propTypes = {
       untertitel: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
+  deleteBook: PropTypes.func.isRequired,
+  writeAccess: PropTypes.bool.isRequired,
 };
