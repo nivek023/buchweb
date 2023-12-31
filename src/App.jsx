@@ -8,6 +8,7 @@ import Search from './components/main/BookSearch';
 import Details from './components/main/BookDetails';
 import BookEdit from './components/main/BookEdit';
 import { useAuth } from './components/provider/useAuth';
+import Login from './components/header/Login';
 
 function App() {
   const { writeAccess } = useAuth();
@@ -25,6 +26,7 @@ function App() {
               path="/edit/:id"
               element={writeAccess ? <BookEdit /> : <Forbidden />}
             />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </div>
       </div>
