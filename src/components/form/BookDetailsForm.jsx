@@ -1,8 +1,9 @@
+import { useNavigate, useParams } from 'react-router-dom';
 import { Grid, Typography, Rating, Button, useMediaQuery } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PropTypes from 'prop-types';
-import { useNavigate, useParams } from 'react-router-dom';
+
 import { formatDate, formatPreis } from './internatUtil';
 
 const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
@@ -12,7 +13,9 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
   const gridSpacer = <Grid item xs={6} />;
   const isMobile = useMediaQuery('(max-width:400px)');
   const exists = (value) => {
-    return value !== null && value !== undefined && value !== '' && value !== 'null';
+    return (
+      value !== null && value !== undefined && value !== '' && value !== 'null'
+    );
   };
   const renderNullableValue = (value) => {
     console.log(value);
@@ -23,7 +26,7 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
   };
   const handleDeleteClick = () => {
     deleteBook(id);
-    navigate('/');
+    navigate('/search');
   };
   return (
     <div>
@@ -123,7 +126,9 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
             <strong>Schlagwörter:</strong>{' '}
-            {exists(book.schlagwoerter[0]) ? book.schlagwoerter.join(', ') : 'N/A'}
+            {exists(book.schlagwoerter[0])
+              ? book.schlagwoerter.join(', ')
+              : 'N/A'}
           </Typography>
         </Grid>
         {gridSpacer}
@@ -157,8 +162,6 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
   );
 };
 
-export default BookDetailsForm;
-
 BookDetailsForm.propTypes = {
   book: PropTypes.shape({
     isbn: PropTypes.string.isRequired,
@@ -178,3 +181,4 @@ BookDetailsForm.propTypes = {
   deleteBook: PropTypes.func.isRequired,
   writeAccess: PropTypes.bool.isRequired,
 };
+export default BookDetailsForm;

@@ -8,11 +8,12 @@ import {
   Rating,
   TextField,
 } from '@mui/material';
-import axios from 'axios';
-import PropTypes from 'prop-types';
 import { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AuthContext } from '../provider/AuthProvider';
+import axios from 'axios';
+import PropTypes from 'prop-types';
+
+import { AuthContext } from '../provider/AuthProvider.jsx';
 // eslint-disable-next-line react/prop-types
 const BookChangeForm = ({ book, etag }) => {
   const { cToken } = useContext(AuthContext);
@@ -218,8 +219,7 @@ const BookChangeForm = ({ book, etag }) => {
   );
 };
 
-export default BookChangeForm;
-
 BookChangeForm.propTypes = {
   book: PropTypes.shape({}).isRequired,
 };
+export default BookChangeForm;

@@ -1,14 +1,25 @@
-import {AppBar, Toolbar, Button, Typography, TextField, Drawer, List, ListItem, ListItemText, useMediaQuery} from '@mui/material';
+import {
+  AppBar,
+  Toolbar,
+  Button,
+  Typography,
+  TextField,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  useMediaQuery,
+} from '@mui/material';
 import { styled } from '@mui/system';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import BookIcon from '@mui/icons-material/Book';
 import { useState, useEffect, useRef } from 'react';
-import { useAuth } from '../provider/useAuth';
 import Box from '@mui/material/Box';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useLocation } from 'react-router-dom';
+
+import { useAuth } from '../provider/useAuth.js';
 
 const Navbar = () => {
   const pwdRef = useRef(null);
@@ -127,7 +138,11 @@ const Navbar = () => {
           {isMobile ? null : (
             <>
               <Box sx={{ marginRight: 3 }} />
-              <Button onClick={handleSearchClick} variant="contained" color="primary">
+              <Button
+                onClick={handleSearchClick}
+                variant="contained"
+                color="primary"
+              >
                 Erweiterte Suche <SearchIcon />
               </Button>
               <Box sx={{ marginRight: 1 }} />
@@ -187,7 +202,11 @@ const Navbar = () => {
       </AppBar>
 
       {isMobile && (
-        <Drawer anchor="left" open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+        <Drawer
+          anchor="left"
+          open={isDrawerOpen}
+          onClose={() => setIsDrawerOpen(false)}
+        >
           <List>
             <ListItem button onClick={() => handleDrawerItemClick('/')}>
               <ListItemText primary="Home" />
@@ -195,7 +214,11 @@ const Navbar = () => {
             <ListItem button onClick={() => handleDrawerItemClick('/search')}>
               <ListItemText primary="Erweiterte Suche" />
             </ListItem>
-            <ListItem button onClick={() => handleDrawerItemClick('/add')} disabled={!writeAccess}>
+            <ListItem
+              button
+              onClick={() => handleDrawerItemClick('/add')}
+              disabled={!writeAccess}
+            >
               <ListItemText primary="Neues Buch" />
             </ListItem>
           </List>
