@@ -7,7 +7,7 @@ import { useMediaQuery } from '@mui/material';
 import { useAuth } from '../provider/useAuth.js';
 
 const Login = () => {
-  const { logout, isLoggedIn, navbarColor } = useAuth();
+  const { logout, isLoggedIn, navbarColor, login, setIsLoggedIn, setNavbarColor } = useAuth();
   const [benutzer, setBenutzer] = useState('');
   const [passwort, setPasswort] = useState('');
   const navigate = useNavigate();
@@ -15,21 +15,20 @@ const Login = () => {
   const isMobile = useMediaQuery('(max-width:800px)');
 
   const handleLoginClick = async () => {
-      try {
-        if (isLoggedIn) {
-          handleLogout();
-          return;
-        }
-        const successfulLogin = await login(benutzer, passwort);
-        setIsLoggedIn(successfulLogin);
-        if (successfulLogin) {
-          setNavbarColor('success');
-        } else {
-          setNavbarColor('error');
-        }
-      } catch (error) {
-        console.error('Error during login:', error);
+    try {
+      if (isLoggedIn) {
+        logout();
+        return;
       }
+      const successfulLogin = await login(benutzer, passwort);
+      setIsLoggedIn(successfulLogin);
+      if (successfulLogin) {
+        setNavbarColor('success');
+      } else {
+        setNavbarColor('error');
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
     }
   };
 
@@ -111,5 +110,6 @@ const Login = () => {
       </Button>
     </div>
   );
+};
 
 export default Login;
