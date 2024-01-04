@@ -21,9 +21,6 @@ const BookChangeForm = ({ book, etag }) => {
   const { id = 'default' } = useParams();
 
   const navigate = useNavigate();
-
-  console.log(book);
-  console.log(etag);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditedBook({

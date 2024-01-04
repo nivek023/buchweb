@@ -20,7 +20,6 @@ export const AuthProvider = ({ children }) => {
       setWriteAccess(isAdminOrFachabteilung);
       return isAdminOrFachabteilung || isKunde;
     } catch (error) {
-      console.log('AuthProvider.login: error, login nicht erfolgreich');
       return false;
     }
   };

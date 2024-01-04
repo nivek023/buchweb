@@ -44,7 +44,6 @@ const BookDetails = () => {
       Authorization: `Bearer ${cToken}`,
       'Content-Type': 'application/hal',
     };
-    console.log(`BookDetails.deleteBook token: ${cToken}`);
     const url = '/api/rest/';
     const request = `${id}`;
     axios
