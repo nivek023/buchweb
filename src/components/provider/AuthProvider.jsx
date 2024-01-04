@@ -2,8 +2,7 @@ import { createContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 
-export const AuthContext = createContext(null);
-
+// eslint-disable-next-line import/exports-last
 export const AuthProvider = ({ children }) => {
   const [cToken, setCToken] = useState('');
   const [writeAccess, setWriteAccess] = useState(false);
@@ -66,3 +65,5 @@ export const AuthProvider = ({ children }) => {
 AuthProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
+
+export const AuthContext = createContext(null);

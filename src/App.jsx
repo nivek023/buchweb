@@ -1,14 +1,15 @@
 import './App.css';
-import Navbar from './components/header/Navbar';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './components/main/Home';
-import Forbidden from './components/main/Forbidden';
-import Add from './components/main/AddNewBook';
-import Search from './components/main/BookSearch';
-import Details from './components/main/BookDetails';
-import BookEdit from './components/main/BookEdit';
-import { useAuth } from './components/provider/useAuth';
-import Login from './components/header/Login';
+
+import Navbar from './components/header/Navbar.jsx';
+import Home from './components/main/Home.jsx';
+import Forbidden from './components/main/Forbidden.jsx';
+import Add from './components/main/AddNewBook.jsx';
+import Search from './components/main/BookSearch.jsx';
+import Details from './components/main/BookDetails.jsx';
+import BookEdit from './components/main/BookEdit.jsx';
+import { useAuth } from './components/provider/useAuth.js';
+import Login from './components/header/Login.jsx';
 
 function App() {
   const { writeAccess } = useAuth();
@@ -19,7 +20,10 @@ function App() {
         <div className="content">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/add" element={writeAccess ? <Add /> : <Forbidden />} />
+            <Route
+              path="/add"
+              element={writeAccess ? <Add /> : <Forbidden />}
+            />
             <Route path="/search" element={<Search />} />
             <Route path="/details/:id" element={<Details />} />
             <Route
@@ -33,5 +37,4 @@ function App() {
     </Router>
   );
 }
-
 export default App;

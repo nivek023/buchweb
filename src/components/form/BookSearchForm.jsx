@@ -15,9 +15,9 @@ import {
   IconButton,
 } from '@mui/material';
 import { DataGrid, deDE } from '@mui/x-data-grid';
+import { red } from '@mui/material/colors';
 import Box from '@mui/material/Box';
 import PropTypes from 'prop-types';
-import { red } from '@mui/material/colors';
 
 const BookSearchForm = ({
   searchIsbn,
@@ -250,8 +250,6 @@ const BookSearchForm = ({
   );
 };
 
-export default BookSearchForm;
-
 BookSearchForm.propTypes = {
   searchIsbn: PropTypes.string.isRequired,
   setSearchIsbn: PropTypes.func.isRequired,
@@ -275,3 +273,4 @@ BookSearchForm.propTypes = {
   handleDeleteRow: PropTypes.func.isRequired,
   handleReset: PropTypes.func.isRequired,
 };
+export default BookSearchForm;
