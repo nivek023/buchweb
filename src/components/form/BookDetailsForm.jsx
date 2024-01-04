@@ -1,3 +1,4 @@
+import { useState} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Grid, Typography, Rating, Button, useMediaQuery } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
@@ -5,6 +6,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import PropTypes from 'prop-types';
 
 import { formatDate, formatPreis } from './internatUtil';
+import ConfirmDelete from '../dialog/ConfirmDelete.jsx';
 
 const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
   const {
@@ -19,8 +21,9 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
     schlagwoerter,
     titel: { titel },
   } = book;
-  const bookRabattP = Math.round(rabatt * 100);
+  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const { id = 'default' } = useParams();
+  const bookRabattP = Math.round(rabatt * 100);
   const navigate = useNavigate();
   const gridSpacer = <Grid item xs={6} />;
   const isMobile = useMediaQuery('(max-width:400px)');
@@ -30,15 +33,21 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
     );
   };
   const renderNullableValue = (value) => {
-    console.log(value);
     return exists(value) ? value : 'N/A';
   };
   const handleBtenClick = () => {
     navigate(`/edit/${id}`);
   };
   const handleDeleteClick = () => {
+    setDeleteConfirmation(true);
+  };
+  const handleDeleteConfirm = () => {
     deleteBook(id);
+    setDeleteConfirmation(false);
     navigate('/search');
+  };
+  const handleDeleteCancel = () => {
+    setDeleteConfirmation(false);
   };
   return (
     <div>
@@ -170,6 +179,11 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
           )}
         </Grid>
       </Grid>
+      <ConfirmDelete
+        open={deleteConfirmation}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+      />
     </div>
   );
 };
