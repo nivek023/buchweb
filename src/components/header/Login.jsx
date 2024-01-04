@@ -15,12 +15,21 @@ const Login = () => {
   const isMobile = useMediaQuery('(max-width:800px)');
 
   const handleLoginClick = async () => {
-    try {
-      if (isLoggedIn) {
-        logout();
+      try {
+        if (isLoggedIn) {
+          handleLogout();
+          return;
+        }
+        const successfulLogin = await login(benutzer, passwort);
+        setIsLoggedIn(successfulLogin);
+        if (successfulLogin) {
+          setNavbarColor('success');
+        } else {
+          setNavbarColor('error');
+        }
+      } catch (error) {
+        console.error('Error during login:', error);
       }
-    } catch (error) {
-      console.error('Error during login/logout:', error);
     }
   };
 
@@ -102,6 +111,5 @@ const Login = () => {
       </Button>
     </div>
   );
-};
 
 export default Login;
