@@ -134,7 +134,7 @@ const Navbar = () => {
                 variant="contained"
                 color="primary"
               >
-                Erweiterte Suche <SearchIcon />
+                Suche nach Büchern <SearchIcon />
               </Button>
               <Box sx={{ marginRight: 1 }} />
               <Button
