@@ -43,8 +43,12 @@ export const AuthProvider = ({ children }) => {
     setWriteAccess(false);
   };
 
+  const isLoggedIn = () => {
+    return (cToken !== '')
+  }
+
   return (
-    <AuthContext.Provider value={{ cToken, writeAccess, login, logout }}>
+    <AuthContext.Provider value={{ cToken, writeAccess, login, logout, isLoggedIn }}>
       {children}
     </AuthContext.Provider>
   );
