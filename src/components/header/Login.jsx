@@ -39,6 +39,31 @@ const Login = () => {
 
   return (
     <div style={{ padding: '20px' }}>
+      {isMobile && (
+        <>
+          <TextField
+            id="login-benutzer-mobile"
+            label="Benutzer"
+            variant="outlined"
+            color="secondary"
+            value={benutzer}
+            onChange={(e) => setBenutzer(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            id="login-passwort-mobile"
+            label="Passwort"
+            variant="outlined"
+            color="secondary"
+            type="password"
+            value={passwort}
+            onChange={(e) => setPasswort(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+        </>
+      )}
       {!isMobile && (
         <>
           <TextField
