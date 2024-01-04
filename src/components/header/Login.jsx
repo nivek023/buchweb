@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { useAuth } from '../provider/useAuth';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useMediaQuery } from '@mui/material';
+
+import { useAuth } from '../provider/useAuth.js';
 
 const Login = () => {
   const { logout, isLoggedIn, navbarColor } = useAuth();

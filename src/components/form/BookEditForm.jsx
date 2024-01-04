@@ -110,7 +110,7 @@ const BookChangeForm = ({ book, etag }) => {
       console.error('Error occurred during PUT request:', error.message);
     }
   };
-  
+
   return (
     <div>
       <Grid container spacing={4}>
