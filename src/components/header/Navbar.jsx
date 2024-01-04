@@ -1,14 +1,13 @@
-import {AppBar, Toolbar, Button, Typography, TextField, Drawer, List, ListItem, ListItemText, useMediaQuery} from '@mui/material';
+import { AppBar, Toolbar, Button, Typography, TextField, Drawer, List, ListItem, ListItemText, useMediaQuery } from '@mui/material';
 import { styled } from '@mui/system';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import BookIcon from '@mui/icons-material/Book';
-import { useState, useEffect, useRef } from 'react';
-import { useAuth } from '../provider/useAuth';
 import Box from '@mui/material/Box';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useLocation } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
+import { useAuth } from '../provider/useAuth';
 
 const Navbar = () => {
   const pwdRef = useRef(null);
@@ -18,12 +17,10 @@ const Navbar = () => {
     flexGrow: 1,
   });
 
-  const { login, logout, writeAccess } = useAuth();
+  const { login, logout, writeAccess, navbarColor, isLoggedIn, setIsLoggedIn, setNavbarColor } = useAuth();
   const [benutzer, setBenutzer] = useState('');
   const [passwort, setPasswort] = useState('');
   const navigate = useNavigate();
-  const [navbarColor, setNavbarColor] = useState('default');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const isMobile = useMediaQuery('(max-width:800px)');
@@ -55,16 +52,16 @@ const Navbar = () => {
       return;
     }
 
-    if (isLoggedIn) {
-      logout();
-      setIsLoggedIn(false);
-      setPasswort('');
-      navigate('/');
-      console.log('Navbar.handleLoginClick: logged out');
-      return;
-    }
-
     try {
+      if (isLoggedIn) {
+        logout();
+        setIsLoggedIn(false);
+        setPasswort('');
+        navigate('/');
+        console.log('Navbar.handleLoginClick: logged out');
+        return;
+      }
+
       const successfulLogin = await login(benutzer, passwort);
       setIsLoggedIn(successfulLogin);
 
@@ -72,6 +69,7 @@ const Navbar = () => {
         'Navbar.handleLoginClick: login executed, successfulLogin: ',
         successfulLogin
       );
+
       if (successfulLogin) {
         console.log('Login success');
         setNavbarColor('success');
@@ -94,17 +92,10 @@ const Navbar = () => {
   useEffect(() => {
     if (navbarColor === 'error' || navbarColor === 'success') {
       const timeout = setTimeout(() => {
-        setNavbarColor('default');
       }, 260);
       return () => clearTimeout(timeout);
     }
   }, [navbarColor]);
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      setNavbarColor('success');
-    }
-  }, [isLoggedIn]);
 
   useEffect(() => {
     if (!isMobile && location.pathname === '/login') {
