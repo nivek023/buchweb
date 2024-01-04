@@ -29,12 +29,11 @@ const Navbar = () => {
     flexGrow: 1,
   });
 
-  const { login, logout, writeAccess } = useAuth();
+  const { login, logout, writeAccess, isLoggedIn } = useAuth();
   const [benutzer, setBenutzer] = useState('');
   const [passwort, setPasswort] = useState('');
   const navigate = useNavigate();
   const [navbarColor, setNavbarColor] = useState('default');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const isMobile = useMediaQuery('(max-width:800px)');
@@ -61,19 +60,19 @@ const Navbar = () => {
   };
 
   const handleLoginClick = async () => {
+    if (isLoggedIn()) {
+      handleLogout();
+      return;
+    }
     if (isMobile) {
       navigate('/login');
       return;
     }
     try {
-      if (isLoggedIn) {
-        handleLogout();
-        return;
-      }
       const successfulLogin = await login(benutzer, passwort);
-      setIsLoggedIn(successfulLogin);
       if (successfulLogin) {
         setNavbarColor('success');
+        navigate('/');
       } else {
         setNavbarColor('error');
       }
@@ -84,9 +83,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    setIsLoggedIn(false);
     setPasswort('');
-    navigate('/');
   };
 
   const handleEnterKeyPress = (event, nextFieldRef) => {
@@ -106,10 +103,10 @@ const Navbar = () => {
   }, [navbarColor]);
 
   useEffect(() => {
-    if (isLoggedIn) {
+    if (isLoggedIn()) {
       setNavbarColor('success');
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn()]);
 
   useEffect(() => {
     if (!isMobile && location.pathname === '/login') {
@@ -137,7 +134,7 @@ const Navbar = () => {
                 variant="contained"
                 color="primary"
               >
-                Erweiterte Suche <SearchIcon />
+                Suche nach Büchern <SearchIcon />
               </Button>
               <Box sx={{ marginRight: 1 }} />
               <Button
@@ -151,7 +148,7 @@ const Navbar = () => {
             </>
           )}
           <Grow />
-          {isLoggedIn ? null : (
+          {isLoggedIn() ? null : (
             <>
               {!isMobile && (
                 <>
@@ -190,7 +187,7 @@ const Navbar = () => {
             variant="contained"
             color="primary"
           >
-            {isLoggedIn ? 'Logout' : 'Login'}
+            {isLoggedIn() ? 'Logout' : 'Login'}
           </Button>
         </Toolbar>
       </AppBar>

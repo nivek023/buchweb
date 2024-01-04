@@ -3,42 +3,45 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useMediaQuery } from '@mui/material';
+import Typography from '@mui/material/Typography';
 
 import { useAuth } from '../provider/useAuth.js';
 
 const Login = () => {
-  const { logout, isLoggedIn, navbarColor, login, setIsLoggedIn, setNavbarColor } = useAuth();
+  const { logout, login, cToken, isLoggedIn} = useAuth();
   const [benutzer, setBenutzer] = useState('');
   const [passwort, setPasswort] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
   const isMobile = useMediaQuery('(max-width:800px)');
 
   const handleLoginClick = async () => {
     try {
-      if (isLoggedIn) {
+      setErrorMessage('');
+      if (isLoggedIn()) {
         logout();
         return;
       }
       const successfulLogin = await login(benutzer, passwort);
-      setIsLoggedIn(successfulLogin);
       if (successfulLogin) {
-        setNavbarColor('success');
+        navigate('/');
       } else {
-        setNavbarColor('error');
+        setErrorMessage('Das Passwort oder der Benutzername ist falsch. Bitte versuche es erneut');
       }
     } catch (error) {
-      console.error('Error during login:', error);
+      console.log(error)
+        setErrorMessage('Fehler bei der Anmeldung');
     }
   };
 
   useEffect(() => {
-    if (navbarColor === 'success') {
       const timeout = setTimeout(() => {
-      }, 260);
+        setErrorMessage('');
+      }, 2000);
       return () => clearTimeout(timeout);
-    }
-  }, [navbarColor]);
+    
+  }, [errorMessage]);
 
   useEffect(() => {
     if (!isMobile && location.pathname === '/login') {
@@ -48,7 +51,7 @@ const Login = () => {
 
   return (
     <div style={{ padding: '20px' }}>
-      {isMobile && (
+      {isMobile ? (
         <>
           <TextField
             id="login-benutzer-mobile"
@@ -72,8 +75,7 @@ const Login = () => {
             margin="normal"
           />
         </>
-      )}
-      {!isMobile && (
+      ) : (
         <>
           <TextField
             id="login-benutzer"
@@ -106,8 +108,13 @@ const Login = () => {
         size="large"
         style={{ marginTop: '20px' }}
       >
-        {isLoggedIn ? 'Logout' : 'Login'}
+        {isLoggedIn() ? 'Logout' : 'Login'}
       </Button>
+      {errorMessage && (
+        <Typography variant="body2" color="error" style={{ marginTop: '10px' }}>
+          {errorMessage}
+        </Typography>
+      )}
     </div>
   );
 };
