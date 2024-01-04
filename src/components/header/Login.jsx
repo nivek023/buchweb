@@ -1,53 +1,69 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useAuth } from '../provider/useAuth';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useMediaQuery } from '@mui/material';
 
 const Login = () => {
-  const { login, logout } = useAuth();
+  const { logout, isLoggedIn, navbarColor } = useAuth();
   const [benutzer, setBenutzer] = useState('');
   const [passwort, setPasswort] = useState('');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isMobile = useMediaQuery('(max-width:800px)');
 
   const handleLoginClick = async () => {
     try {
       if (isLoggedIn) {
         logout();
-        setIsLoggedIn(false);
-      } else {
-        const successfulLogin = await login(benutzer, passwort);
-        if (successfulLogin) {
-          setIsLoggedIn(true);
-        }
       }
     } catch (error) {
       console.error('Error during login/logout:', error);
     }
   };
 
+  useEffect(() => {
+    if (navbarColor === 'success') {
+      const timeout = setTimeout(() => {
+      }, 260);
+      return () => clearTimeout(timeout);
+    }
+  }, [navbarColor]);
+
+  useEffect(() => {
+    if (!isMobile && location.pathname === '/login') {
+      navigate('/');
+    }
+  }, [isMobile, location, navigate]);
+
   return (
     <div style={{ padding: '20px' }}>
-      <TextField
-        id="login-benutzer"
-        label="Benutzer"
-        variant="outlined"
-        color="secondary"
-        value={benutzer}
-        onChange={(e) => setBenutzer(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
-      <TextField
-        id="login-passwort"
-        label="Passwort"
-        variant="outlined"
-        color="secondary"
-        type="password"
-        value={passwort}
-        onChange={(e) => setPasswort(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
+      {!isMobile && (
+        <>
+          <TextField
+            id="login-benutzer"
+            label="Benutzer"
+            variant="outlined"
+            color="secondary"
+            value={benutzer}
+            onChange={(e) => setBenutzer(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            id="login-passwort"
+            label="Passwort"
+            variant="outlined"
+            color="secondary"
+            type="password"
+            value={passwort}
+            onChange={(e) => setPasswort(e.target.value)}
+            fullWidth
+            margin="normal"
+          />
+        </>
+      )}
       <Button
         onClick={handleLoginClick}
         variant="contained"
