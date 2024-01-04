@@ -3,12 +3,13 @@ import {
 import { styled } from '@mui/system';
 import { useNavigate, useLocation } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
-import AddIcon from '@mui/icons-material/Add';
-import BookIcon from '@mui/icons-material/Book';
-import { useAuth } from '../provider/useAuth';
 import { useState, useEffect, useRef } from 'react';
 import Box from '@mui/material/Box';
 import MenuIcon from '@mui/icons-material/Menu';
+import BookIcon from '@mui/icons-material/Book';
+import AddIcon from '@mui/icons-material/Add';
+
+import { useAuth } from '../provider/useAuth';
 
 const Navbar = () => {
   const pwdRef = useRef(null);
@@ -54,33 +55,28 @@ const Navbar = () => {
     }
 
     try {
-      if (isLoggedIn) {
-        logout();
-        setIsLoggedIn(false);
-        setPasswort('');
-        navigate('/');
-        console.log('Navbar.handleLoginClick: logged out');
-        return;
-      }
+    if (isLoggedIn) {
+      handleLogout();
+      return;
+    }
 
       const successfulLogin = await login(benutzer, passwort);
       setIsLoggedIn(successfulLogin);
-
-      console.log(
-        'Navbar.handleLoginClick: login executed, successfulLogin: ',
-        successfulLogin
-      );
-
       if (successfulLogin) {
-        console.log('Login success');
         setNavbarColor('success');
       } else {
-        console.log('Login failed');
         setNavbarColor('error');
       }
     } catch (error) {
       console.error('Error during login:', error);
     }
+  };
+
+  const handleLogout = () => {
+    logout();
+    setIsLoggedIn(false);
+    setPasswort('');
+    navigate('/');
   };
 
   const handleEnterKeyPress = (event, nextFieldRef) => {

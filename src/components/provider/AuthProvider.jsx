@@ -10,26 +10,16 @@ export const AuthProvider = ({ children }) => {
   const login = async (username, password) => {
     try {
       const response = await loginUser({ username, password });
-      console.log('AuthProvider.login: response:', response);
       const { token, roles } = response.data;
       setCToken(token);
-      console.log('AuthProvider.login: setToken executed');
-      console.log('AuthProvider.login: token: ', token);
+
       const isAdminOrFachabteilung = roles.some(
         (r) => r === 'admin' || r === 'fachabteilung'
       );
       const isKunde = roles.includes('kunde');
-
-      if (isAdminOrFachabteilung) {
-        setWriteAccess(true);
-        return true;
-      }
-      if (isKunde) {
-        return true;
-      }
-      return false;
+      setWriteAccess(isAdminOrFachabteilung);
+      return isAdminOrFachabteilung || isKunde;
     } catch (error) {
-      console.log('AuthProvider.login: error, login nicht erfolgreich');
       return false;
     }
   };
@@ -39,13 +29,11 @@ export const AuthProvider = ({ children }) => {
     const requestData = `username=${encodeURIComponent(
       username
     )}&password=${encodeURIComponent(password)}`;
+
     const response = await axios.post(url, requestData);
-    console.log('AuthProvider.loginUser: axios.post executed');
     if (response.status === 200) {
-      console.log('AuthProvider.loginUser: (200)');
       return response;
     } else {
-      console.log('AuthProvider.loginUser: axios.post failed');
       throw new Error('Login failed');
     }
   };

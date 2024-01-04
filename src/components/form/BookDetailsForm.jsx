@@ -1,3 +1,4 @@
+import { useState} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Grid, Typography, Rating, Button, useMediaQuery } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
@@ -5,10 +6,24 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import PropTypes from 'prop-types';
 
 import { formatDate, formatPreis } from './internatUtil';
+import ConfirmDelete from '../dialog/ConfirmDelete.jsx';
 
 const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
-  const bookRabattP = Math.round(book.rabatt * 100);
+  const {
+    isbn,
+    rating,
+    art,
+    preis,
+    rabatt,
+    lieferbar,
+    datum,
+    homepage,
+    schlagwoerter,
+    titel: { titel },
+  } = book;
+  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
   const { id = 'default' } = useParams();
+  const bookRabattP = Math.round(rabatt * 100);
   const navigate = useNavigate();
   const gridSpacer = <Grid item xs={6} />;
   const isMobile = useMediaQuery('(max-width:400px)');
@@ -18,40 +33,46 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
     );
   };
   const renderNullableValue = (value) => {
-    console.log(value);
     return exists(value) ? value : 'N/A';
   };
   const handleBtenClick = () => {
     navigate(`/edit/${id}`);
   };
   const handleDeleteClick = () => {
+    setDeleteConfirmation(true);
+  };
+  const handleDeleteConfirm = () => {
     deleteBook(id);
+    setDeleteConfirmation(false);
     navigate('/search');
+  };
+  const handleDeleteCancel = () => {
+    setDeleteConfirmation(false);
   };
   return (
     <div>
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Typography variant="h5" gutterBottom>
-            Buchtitel: {book.titel.titel}
+            Buchtitel: {titel.titel}
           </Typography>
         </Grid>
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
-            <strong>ISBN:</strong> {book.isbn}
+            <strong>ISBN:</strong> {isbn}
           </Typography>
         </Grid>
         {gridSpacer}
         <Grid item xs={12}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
-            <Rating name="read-only" value={book.rating} readOnly />
+            <Rating name="read-only" value={rating} readOnly />
           </Typography>
         </Grid>
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
-            {exists(book.lieferbar)
+            {exists(lieferbar)
               ? `Buch kann ${
-                  book.lieferbar ? '' : 'leider nicht'
+                  lieferbar ? '' : 'leider nicht'
                 } geliefert werden`
               : `Lieferstatus unbekannt`}
           </Typography>
@@ -62,7 +83,7 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
             variant="body1"
             style={{ textAlign: 'left', marginRight: '20px' }}
           >
-            <strong>Art:</strong> {renderNullableValue(book.art)}
+            <strong>Art:</strong> {renderNullableValue(art)}
           </Typography>
         </Grid>
         <Grid item xs={2} style={{ textAlign: 'center' }}>
@@ -80,7 +101,7 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
         <Grid item xs={5} />
         <Grid item xs={5}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
-            <strong>Preis:</strong> {formatPreis(book.preis)}€
+            <strong>Preis:</strong> {formatPreis(preis)}€
           </Typography>
         </Grid>
         <Grid item xs={2} style={{ textAlign: 'center' }}>
@@ -99,23 +120,23 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
             <strong>Rabatt:</strong>{' '}
-            {exists(book.rabatt) ? `${bookRabattP}%` : 'N/A'}
+            {exists(rabatt) ? `${bookRabattP}%` : 'N/A'}
           </Typography>
         </Grid>
         {gridSpacer}
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
             <strong>Datum:</strong>{' '}
-            {renderNullableValue(formatDate(book.datum))}
+            {renderNullableValue(formatDate(datum))}
           </Typography>
         </Grid>
         {gridSpacer}
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
             <strong>Homepage: </strong>
-            {exists(book.homepage) ? (
-              <a href={book.homepage} target="_blank" rel="noopener noreferrer">
-                {book.homepage}
+            {exists(homepage) ? (
+              <a href={homepage} target="_blank" rel="noopener noreferrer">
+                {homepage}
               </a>
             ) : (
               'N/A'
@@ -126,8 +147,8 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
             <strong>Schlagwörter:</strong>{' '}
-            {exists(book.schlagwoerter[0])
-              ? book.schlagwoerter.join(', ')
+            {exists(schlagwoerter[0])
+              ? schlagwoerter.join(', ')
               : 'N/A'}
           </Typography>
         </Grid>
@@ -158,6 +179,11 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
           )}
         </Grid>
       </Grid>
+      <ConfirmDelete
+        open={deleteConfirmation}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+      />
     </div>
   );
 };
