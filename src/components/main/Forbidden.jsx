@@ -1,6 +1,6 @@
 const Forbidden = () => {
-    return <div><p>You Currently have no Access to this Page.<br/>
-                    Please Login to continue.
+    return <div><p>Sie sind leider nicht berechtigt, diese Seite aufzurufen.<br/>
+                    Bitte melde dich an.
         </p></div>;
   };
   
