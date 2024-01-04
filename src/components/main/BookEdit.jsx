@@ -96,14 +96,8 @@ const BookEdit = () => {
 
   return (
     <div>
-      <h2>Edit</h2>
-      <BookEditForm
-        book={book}
-        etag={etag}
-        formData={formData}
-        handleChange={handleChange}
-        handleSchlagwoerterChange={handleSchlagwoerterChange}
-      />
+      <h2>Ändern</h2>
+      <BookEditForm book={book} etag={etag} />
     </div>
   );
 };
