@@ -67,32 +67,28 @@ const Navbar = () => {
     }
 
     if (isLoggedIn) {
-      logout();
-      setIsLoggedIn(false);
-      setPasswort('');
-      navigate('/');
-      console.log('Navbar.handleLoginClick: logged out');
+      handleLogout();
       return;
     }
 
     try {
       const successfulLogin = await login(benutzer, passwort);
       setIsLoggedIn(successfulLogin);
-
-      console.log(
-        'Navbar.handleLoginClick: login executed, successfulLogin: ',
-        successfulLogin
-      );
       if (successfulLogin) {
-        console.log('Login success');
         setNavbarColor('success');
       } else {
-        console.log('Login failed');
         setNavbarColor('error');
       }
     } catch (error) {
       console.error('Error during login:', error);
     }
+  };
+
+  const handleLogout = () => {
+    logout();
+    setIsLoggedIn(false);
+    setPasswort('');
+    navigate('/');
   };
 
   const handleEnterKeyPress = (event, nextFieldRef) => {

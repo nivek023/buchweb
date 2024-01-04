@@ -9,22 +9,31 @@ const BookDetails = () => {
   const [book, setBook] = useState(null);
   const { id = 'default' } = useParams();
   const { cToken, writeAccess } = useAuth();
+  const [notFound, setNotFound] = useState(false);
   useEffect(() => {
     const fetchBook = async () => {
       const url = '/api/rest';
       const request = `?id=${id}`;
       try {
         const response = await axios.get(url + request);
-        if (response.status !== 200) {
-          throw new Error('BookDetails.fetchBook: Kein 200 Status-Code');
-        }
-        if (response.data) {
-          setBook(response.data._embedded.buecher[0]);
+        if (response.status === 200) {
+          if (response.data) {
+            setBook(response.data._embedded.buecher[0]);
+            setNotFound(false);
+          } else {
+            console.error(
+              'BookDetails.fetchBook: response.data ist undefiniert'
+            );
+          }
         } else {
-          console.error('BookDetails.fetchBook: resopnse.data ist undefiniert');
+          throw new Error(
+            `BookDetails.fetchBook: Statuscode: ${response.status}`
+          );
         }
       } catch (error) {
         console.error('BookDetails.fetchBook:', error.message);
+        setNotFound(true);
+        setBook(null);
       }
     };
     fetchBook();
@@ -42,7 +51,9 @@ const BookDetails = () => {
       .delete(url + request, { headers })
       .then((response) => {
         if (response.status !== 204) {
-          throw new Error('BookDetails.deleteBook: Kein 204 Status-Code');
+          throw new Error(
+            `BookDetails.deleteBook: Kein 200 Status-Code, sondern:${response.status}`
+          );
         }
         setBook(null);
       })
@@ -51,7 +62,11 @@ const BookDetails = () => {
       });
   };
 
+  // Buch wird gerade geladen, oder konnte nicht gefunden werden
   if (!book) {
+    if (notFound) {
+      return <div>Book not found</div>;
+    }
     return <div>Loading...</div>;
   }
   return (
