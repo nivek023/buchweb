@@ -1,15 +1,25 @@
 import {
-  AppBar, Toolbar, Button, Typography, TextField, Drawer, List, ListItem, ListItemText, useMediaQuery } from '@mui/material';
+  AppBar,
+  Toolbar,
+  Button,
+  Typography,
+  TextField,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  useMediaQuery,
+} from '@mui/material';
 import { styled } from '@mui/system';
 import { useNavigate, useLocation } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
+import AddIcon from '@mui/icons-material/Add';
+import BookIcon from '@mui/icons-material/Book';
 import { useState, useEffect, useRef } from 'react';
 import Box from '@mui/material/Box';
 import MenuIcon from '@mui/icons-material/Menu';
-import BookIcon from '@mui/icons-material/Book';
-import AddIcon from '@mui/icons-material/Add';
 
-import { useAuth } from '../provider/useAuth';
+import { useAuth } from '../provider/useAuth.js';
 
 const Navbar = () => {
   const pwdRef = useRef(null);
@@ -19,10 +29,12 @@ const Navbar = () => {
     flexGrow: 1,
   });
 
-  const { login, logout, writeAccess, navbarColor, isLoggedIn, setIsLoggedIn, setNavbarColor } = useAuth();
+  const { login, logout, writeAccess } = useAuth();
   const [benutzer, setBenutzer] = useState('');
   const [passwort, setPasswort] = useState('');
   const navigate = useNavigate();
+  const [navbarColor, setNavbarColor] = useState('default');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const isMobile = useMediaQuery('(max-width:800px)');
@@ -53,13 +65,11 @@ const Navbar = () => {
       navigate('/login');
       return;
     }
-
     try {
-    if (isLoggedIn) {
-      handleLogout();
-      return;
-    }
-
+      if (isLoggedIn) {
+        handleLogout();
+        return;
+      }
       const successfulLogin = await login(benutzer, passwort);
       setIsLoggedIn(successfulLogin);
       if (successfulLogin) {
@@ -89,10 +99,17 @@ const Navbar = () => {
   useEffect(() => {
     if (navbarColor === 'error' || navbarColor === 'success') {
       const timeout = setTimeout(() => {
+        setNavbarColor('default');
       }, 260);
       return () => clearTimeout(timeout);
     }
   }, [navbarColor]);
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setNavbarColor('success');
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
     if (!isMobile && location.pathname === '/login') {
