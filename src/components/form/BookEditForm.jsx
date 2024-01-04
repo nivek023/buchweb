@@ -1,28 +1,17 @@
-import {
-  Button,
-  Checkbox,
-  FormControlLabel,
-  Grid,
-  Radio,
-  RadioGroup,
-  Rating,
-  TextField,
-} from '@mui/material';
-import axios from 'axios';
-import PropTypes from 'prop-types';
+import { Button, Checkbox, FormControlLabel, Grid, Radio, RadioGroup, Rating, TextField } from '@mui/material';
 import { useContext, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { AuthContext } from '../provider/AuthProvider';
-// eslint-disable-next-line react/prop-types
+import axios from 'axios';
+import PropTypes from 'prop-types';
+import { AuthContext } from '../provider/AuthProvider.jsx';
+import { formatDate } from '../form/internatUtil';
+
 const BookChangeForm = ({ book, etag }) => {
   const { cToken } = useContext(AuthContext);
   const [editedBook, setEditedBook] = useState(book);
   const { id = 'default' } = useParams();
-
   const navigate = useNavigate();
 
-  console.log(book);
-  console.log(etag);
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setEditedBook({
@@ -31,36 +20,86 @@ const BookChangeForm = ({ book, etag }) => {
     });
   };
 
-  const handleBtenClick = async (cToken) => {
-    const url = '/api/rest';
-    const request = `/${id}`;
-
-    if (!cToken) {
-      throw new Error('No token available');
+  const handleBtenClick = async () => {
+    // Validierung für ISBN
+    if (editedBook.isbn.length !== 13) {
+      alert('Ungültige Eingabe für ISBN. Die ISBN muss 13 Zeichen lang sein.');
+      return;
     }
 
-    const headers = {
-      Authorization: `Bearer ${cToken}`,
-      'Content-Type': 'application/json',
-      'If-Match': etag,
-    };
+    // Validierung für Rating
+    const parsedRating = parseInt(editedBook.rating, 10);
+    if (isNaN(parsedRating) || parsedRating < 1 || parsedRating > 5) {
+      alert('Ungültige Eingabe für Rating. Bitte einen Wert zwischen 1 und 5 eingeben.');
+      return;
+    }
 
-    const bookDTO = {
-      isbn: editedBook.isbn,
-      rating: parseInt(editedBook.rating, 10),
-      art: editedBook.art,
-      preis: parseFloat(editedBook.preis),
-      rabatt: parseFloat(editedBook.rabatt),
-      lieferbar: editedBook.lieferbar,
-      datum: editedBook.datum,
-      homepage: editedBook.homepage,
-      schlagwoerter: editedBook.schlagwoerter,
-    };
+    // Validierung für Zahlen in number-Feldern
+    if (isNaN(Number(editedBook.rabatt))) {
+      alert(`Ungültige Eingabe für Rabatt. Nur Zahlen sind erlaubt.`);
+      return;
+    }
 
+    // Validierung für Zahlen in decimal-Feldern
+    if (isNaN(parseFloat(editedBook.preis))) {
+      alert(`Ungültige Eingabe für Preis. Nur Zahlen sind erlaubt.`);
+      return;
+    }
+
+    // Validierung für Datum
+    if (isNaN(Date.parse(editedBook.datum))) {
+      alert('Ungültige Eingabe für Datum. Bitte ein gültiges Datum eingeben.');
+      return;
+    }
+
+    // Validierung für maximales Datum
+    const enteredDate = new Date(editedBook.datum);
+    const today = new Date();
+    if (enteredDate > today) {
+      alert('Das eingegebene Datum darf nicht größer als heute sein.');
+      return;
+    }
+
+    // Validierung für Datum mit der formatDate-Funktion
+    const formattedDate = formatDate(editedBook.datum);
+    if (formattedDate === editedBook.datum) {
+      alert('Ungültige Eingabe für Datum. Bitte ein gültiges Datum eingeben.');
+      return;
+    }
+
+    // Validierung für Schlagwörter
+    if (/\d/.test(editedBook.schlagwoerter)) {
+      alert('Schlagwörter dürfen keine Zahlen enthalten.');
+      return;
+    }
+
+    // Buch aktualisieren, wenn Validierung erfolgreich ist
     try {
-      const response = await axios.put(url + request, bookDTO, {
-        headers: headers,
-      });
+      const url = '/api/rest';
+      const request = `/${id}`;
+      if (!cToken) {
+        throw new Error('No token available');
+      }
+
+      const headers = {
+        Authorization: `Bearer ${cToken}`,
+        'Content-Type': 'application/json',
+        'If-Match': etag,
+      };
+
+      const bookDTO = {
+        isbn: editedBook.isbn,
+        rating: parseInt(editedBook.rating, 10),
+        art: editedBook.art,
+        preis: parseFloat(editedBook.preis),
+        rabatt: parseFloat(editedBook.rabatt),
+        lieferbar: editedBook.lieferbar,
+        datum: editedBook.datum,
+        homepage: editedBook.homepage,
+        schlagwoerter: editedBook.schlagwoerter,
+      };
+
+      const response = await axios.put(url + request, bookDTO, { headers });
 
       if (response.status === 204) {
         navigate(`/details/${id}`);
@@ -218,8 +257,7 @@ const BookChangeForm = ({ book, etag }) => {
   );
 };
 
-export default BookChangeForm;
-
 BookChangeForm.propTypes = {
   book: PropTypes.shape({}).isRequired,
 };
+export default BookChangeForm;
