@@ -1,15 +1,4 @@
-import {
-  AppBar,
-  Toolbar,
-  Button,
-  Typography,
-  TextField,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  useMediaQuery,
-} from '@mui/material';
+import { AppBar, Toolbar, Button, Typography, TextField, Drawer, List, ListItem, ListItemText, useMediaQuery } from '@mui/material';
 import { styled } from '@mui/system';
 import { useNavigate, useLocation } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
@@ -203,7 +192,7 @@ const Navbar = () => {
               <ListItemText primary="Home" />
             </ListItem>
             <ListItem button onClick={() => handleDrawerItemClick('/search')}>
-              <ListItemText primary="Erweiterte Suche" />
+              <ListItemText primary="Suche nach Büchern" />
             </ListItem>
             <ListItem
               button
