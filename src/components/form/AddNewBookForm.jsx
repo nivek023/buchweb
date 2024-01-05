@@ -110,7 +110,7 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
                     <Grid item xs={12}>
                       <Rating
                         name="rating"
-                        value={addBook.rating}
+                        value={addBook.rating || 0}
                         onChange={(event, newValue) =>
                           handleRatingChange(newValue)
                         }
@@ -127,7 +127,7 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
                         <Select
                           labelId="art-label"
                           name="art"
-                          value={addBook.art}
+                          value={addBook.art || ''}
                           onChange={(e) =>
                             setAddBook({
                               ...addBook,
@@ -161,7 +161,7 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
                       <TextField
                         type="date"
                         name="datum"
-                        value={addBook.datum}
+                        value={addBook.datum || ''}
                         onChange={handleDateChange}
                       />
                     </Grid>
@@ -174,7 +174,7 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
                       <FormControl>
                         <RadioGroup
                           name="lieferbar"
-                          value={addBook.lieferbar}
+                          value={addBook.lieferbar || ''}
                           onChange={handleInputChange}
                         >
                           <FormControlLabel
@@ -201,7 +201,7 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
                       <TextField
                         type="text"
                         name="homepage"
-                        value={addBook.homepage}
+                        value={addBook.homepage || ''}
                         onChange={handleInputChange}
                       />
                     </Grid>
@@ -215,7 +215,7 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
                       <TextField
                         type="text"
                         name="preis"
-                        value={addBook.preis}
+                        value={addBook.preis || ''}
                         onChange={handleInputChange}
                       />
                     </Grid>
@@ -229,7 +229,7 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
                       <TextField
                         type="text"
                         name="rabatt"
-                        value={addBook.rabatt}
+                        value={addBook.rabatt || ''}
                         onChange={handleInputChange}
                       />
                     </Grid>
