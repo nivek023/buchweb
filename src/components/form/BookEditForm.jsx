@@ -1,85 +1,25 @@
-import { Button, Checkbox, FormControlLabel, Grid, Radio, RadioGroup, Rating, TextField } from '@mui/material';
-import { useContext, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+import React from 'react';
+import { Button,
+  Checkbox, FormControlLabel, Grid, Radio, RadioGroup, Rating, TextField} from '@mui/material';
 import PropTypes from 'prop-types';
-import { AuthContext } from '../provider/AuthProvider.jsx';
-import { formatDate } from '../form/internatUtil';
 
 const BookChangeForm = ({ book, etag }) => {
-  const { cToken } = useContext(AuthContext);
-  const [editedBook, setEditedBook] = useState(book);
-  const { id = 'default' } = useParams();
-  const navigate = useNavigate();
+  const [editedBook, setEditedBook] = React.useState(book);
+  const [errorMessage, setErrorMessage] = React.useState('');
+  const [updateError, setUpdateError] = React.useState(false);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditedBook({
-      ...editedBook,
-      [name]: value,
-    });
+    const { name, value, type, checked } = e.target;
+    setEditedBook((prev) => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value,
+    }));
   };
 
-  const handleBtenClick = async () => {
-    // Validierung für ISBN
-    if (editedBook.isbn.length !== 13) {
-      alert('Ungültige Eingabe für ISBN. Die ISBN muss 13 Zeichen lang sein.');
-      return;
-    }
-
-    // Validierung für Rating
-    const parsedRating = parseInt(editedBook.rating, 10);
-    if (isNaN(parsedRating) || parsedRating < 1 || parsedRating > 5) {
-      alert('Ungültige Eingabe für Rating. Bitte einen Wert zwischen 1 und 5 eingeben.');
-      return;
-    }
-
-    // Validierung für Zahlen in number-Feldern
-    if (isNaN(Number(editedBook.rabatt))) {
-      alert(`Ungültige Eingabe für Rabatt. Nur Zahlen sind erlaubt.`);
-      return;
-    }
-
-    // Validierung für Zahlen in decimal-Feldern
-    if (isNaN(parseFloat(editedBook.preis))) {
-      alert(`Ungültige Eingabe für Preis. Nur Zahlen sind erlaubt.`);
-      return;
-    }
-
-    // Validierung für Datum
-    if (isNaN(Date.parse(editedBook.datum))) {
-      alert('Ungültige Eingabe für Datum. Bitte ein gültiges Datum eingeben.');
-      return;
-    }
-
-    // Validierung für maximales Datum
-    const enteredDate = new Date(editedBook.datum);
-    const today = new Date();
-    if (enteredDate > today) {
-      alert('Das eingegebene Datum darf nicht größer als heute sein.');
-      return;
-    }
-
-    // Validierung für Datum mit der formatDate-Funktion
-    const formattedDate = formatDate(editedBook.datum);
-    if (formattedDate === editedBook.datum) {
-      alert('Ungültige Eingabe für Datum. Bitte ein gültiges Datum eingeben.');
-      return;
-    }
-
-    // Validierung für Schlagwörter
-    if (/\d/.test(editedBook.schlagwoerter)) {
-      alert('Schlagwörter dürfen keine Zahlen enthalten.');
-      return;
-    }
-
-    // Buch aktualisieren, wenn Validierung erfolgreich ist
+  const handleBtnClick = async () => {
     try {
-      const url = '/api/rest';
-      const request = `/${id}`;
-      if (!cToken) {
-        throw new Error('No token available');
-      }
+      setErrorMessage('');
+      setUpdateError(false);
 
       const headers = {
         Authorization: `Bearer ${cToken}`,
@@ -105,9 +45,12 @@ const BookChangeForm = ({ book, etag }) => {
         navigate(`/details/${id}`);
       } else {
         console.error('Error occurred during PUT request:', response);
+        setUpdateError(true);
       }
     } catch (error) {
       console.error('Error occurred during PUT request:', error.message);
+      setErrorMessage('Ein Fehler ist aufgetreten. Bitte versuche es erneut.');
+      setUpdateError(true);
     }
   };
 
@@ -163,9 +106,7 @@ const BookChangeForm = ({ book, etag }) => {
             aria-label="Radio options"
             name="radio-options"
             value={editedBook.art}
-            onChange={(e) =>
-              setEditedBook({ ...editedBook, art: e.target.value })
-            }
+            onChange={(e) => setEditedBook({ ...editedBook, art: e.target.value })}
             row
           >
             <FormControlLabel
@@ -173,11 +114,7 @@ const BookChangeForm = ({ book, etag }) => {
               control={<Radio />}
               label="Druckausgabe"
             />
-            <FormControlLabel
-              value="KINDLE"
-              control={<Radio />}
-              label="Kindle"
-            />
+            <FormControlLabel value="KINDLE" control={<Radio />} label="Kindle" />
           </RadioGroup>
         </Grid>
         <Grid item xs={12}>
@@ -244,14 +181,15 @@ const BookChangeForm = ({ book, etag }) => {
         </Grid>
 
         <Grid item xs={12}>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => handleBtenClick(cToken)}
-          >
+          <Button variant="contained" color="primary" onClick={handleBtnClick}>
             Bearbeiten
           </Button>
         </Grid>
+        {updateError && (
+          <Grid item xs={12}>
+            <p style={{ color: 'red' }}>{errorMessage}</p>
+          </Grid>
+        )}
       </Grid>
     </div>
   );
@@ -259,5 +197,7 @@ const BookChangeForm = ({ book, etag }) => {
 
 BookChangeForm.propTypes = {
   book: PropTypes.shape({}).isRequired,
+  etag: PropTypes.string.isRequired,
 };
+
 export default BookChangeForm;
