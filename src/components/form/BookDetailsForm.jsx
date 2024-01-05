@@ -54,7 +54,7 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Typography variant="h5" gutterBottom>
-            Buchtitel: {titel.titel}
+            Buchtitel: {titel}
           </Typography>
         </Grid>
         <Grid item xs={6}>
