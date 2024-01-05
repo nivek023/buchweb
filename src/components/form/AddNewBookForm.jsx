@@ -28,7 +28,7 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
     art: addBook.art,
     preis: parseFloat(addBook.preis),
     rabatt: parseFloat(addBook.rabatt / 100),
-    lieferbar: addBook.lieferbar === true,
+    lieferbar: addBook.lieferbar === 'true' ? true : false,
     datum: addBook.datum,
     homepage: addBook.homepage,
     schlagwoerter: (addBook.javascript ? ['JAVASCRIPT'] : []).concat(
@@ -60,6 +60,7 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
     setAddBook({
       ...addBook,
       [name]: value,
@@ -82,10 +83,12 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
                   <TableCell>
                     <Grid item xs={12}>
                       <TextField
+                        required
                         type="text"
                         name="isbn"
-                        value={addBook.isbn}
+                        value={addBook.isbn || ''}
                         onChange={handleInputChange}
+                        label="Required"
                       />
                     </Grid>
                   </TableCell>
@@ -95,11 +98,12 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
                   <TableCell>
                     <Grid item xs={12}>
                       <TextField
+                        required
                         type="text"
                         name="titel"
                         value={addBook.titel}
                         onChange={handleInputChange}
-                        placeholder="Titel"
+                        label="Required"
                       />
                     </Grid>
                   </TableCell>
@@ -109,8 +113,11 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
                   <TableCell>
                     <Grid item xs={12}>
                       <Rating
+                        required
+                        type="rating"
                         name="rating"
                         value={addBook.rating || 0}
+                        label="Required"
                         onChange={(event, newValue) =>
                           handleRatingChange(newValue)
                         }
@@ -123,7 +130,7 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
                   <TableCell>Art:</TableCell>
                   <TableCell>
                     <Grid item xs={12}>
-                      <FormControl fullWidth>
+                      <FormControl>
                         <Select
                           labelId="art-label"
                           name="art"
@@ -174,18 +181,16 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
                       <FormControl>
                         <RadioGroup
                           name="lieferbar"
-                          value={addBook.lieferbar || ''}
+                          value={addBook.lieferbar}
                           onChange={handleInputChange}
                         >
                           <FormControlLabel
                             value="true"
-                            name="lieferbar"
                             control={<Radio />}
                             label="Ja"
                           />
                           <FormControlLabel
                             value="false"
-                            name="nicht lieferbar"
                             control={<Radio />}
                             label="Nein"
                           />
@@ -213,10 +218,12 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
                   <TableCell>
                     <Grid item xs={12}>
                       <TextField
+                        required
                         type="text"
                         name="preis"
                         value={addBook.preis || ''}
                         onChange={handleInputChange}
+                        label="Required"
                       />
                     </Grid>
                   </TableCell>
