@@ -3,12 +3,10 @@ export function validateISBN(isbn) {
   return isbnRegex.test(isbn);
 }
 
-export function validateTitle(title) {
-    if (title.trim() === '') {
-      return 'Der Titel darf nicht leer sein.';
-    }
-    return null;
-  }
+export function validateTitle(titel) {
+  const textRegex = /\S+/;
+  return textRegex.test(titel)
+}
 
 export function validatePreis(preis) {
   const preisRegex = /^\d+(\.\d{1,2})?$/;
