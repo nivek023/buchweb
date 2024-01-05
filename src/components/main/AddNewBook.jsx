@@ -15,7 +15,7 @@ const AddNewBook = () => {
     rabatt: '',
     lieferbar: true,
     datum: '',
-    homepage: '', 
+    homepage: '',
     titel: '',
     schlagwoerter: [],
   });
@@ -41,13 +41,13 @@ const AddNewBook = () => {
         console.log(
           'Buch wurde erfolgreich hinzugefügt. ID:',
           response.data.id,
-          setFeedbackMessage('Das Buch wurde erfolgreich hinzugefügt.'),
+          setFeedbackMessage('Das Buch wurde erfolgreich hinzugefügt.')
         );
         setBook(() => ({
           ...book,
           id: response.data.id,
         }));
-        setBook(book)
+        setBook(book);
       } else {
         console.error('Error occurred during POST request:', response);
       }
