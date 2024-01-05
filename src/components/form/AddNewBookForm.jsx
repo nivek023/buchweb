@@ -127,7 +127,10 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
         isValid: isValidRabatt,
         errorMessage: isValidRabatt
           ? ''
-          : 'Muss ein gültiger Rabatt sein (z.B. 0.10)',
+          : 
+          <>
+          Muss ein gültiger Rabatt sein <br/>(z.B. 0.10),
+          </>
       });
     }
 
@@ -135,9 +138,14 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
       const isValidHomepage = validateHomepage(value);
       setHomepageValidation({
         isValid: isValidHomepage,
-        errorMessage: isValidHomepage
-          ? ''
-          : 'Muss ein gültige Homepage-URL sein (https://beispiel.com) ',
+        errorMessage: isValidHomepage ? (
+          ''
+        ) : (
+          <>
+            Muss eine gültige URL sein <br />
+             (https://beispiel.com)
+          </>
+        ),
       });
     }
   };
