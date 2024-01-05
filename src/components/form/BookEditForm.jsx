@@ -14,6 +14,13 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 
 import { AuthContext } from '../provider/AuthProvider.jsx';
+import {
+  validateISBN,
+  validatePreis,
+  validateRabatt,
+  validateHomepage,
+  validateDatum
+} from './inputValidator';
 
 const BookChangeForm = ({ book, etag }) => {
   const { cToken } = useContext(AuthContext);
@@ -42,33 +49,6 @@ const BookChangeForm = ({ book, etag }) => {
 
   const { id = 'default' } = useParams();
   const navigate = useNavigate();
-
-  const validateISBN = (isbn) => {
-    const isbnRegex = /\d{3}-\d-\d{3}-\d{5}-\d$/u;
-    return isbnRegex.test(isbn);
-  };
-
-  const validatePreis = (preis) => {
-    const preisRegex =/^\d+(\.\d{1,2})?$/;
-    return preisRegex.test(preis);
-  };
-
-  const validateRabatt = (rabatt) => {
-    const isRabatt = /^(0(\.\d{1,2})?|1(\.0{1,2})?)$/;
-    return isRabatt.test(rabatt);
-  };
-
-  const validateDatum = (datum) => {
-    const isDatum = /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/;
-
-    return isDatum.test(datum);
-  };
-
-  const validateHomepage = (homepage) => {
-    const isHomepage =
-      /^(https?:\/\/)?([a-zA-Z0-9-]+\.)?[a-zA-Z0-9-]+\.(com|de|net)$/;
-    return isHomepage.test(homepage);
-  };
 
   useEffect(() => {
     setFormValid(
