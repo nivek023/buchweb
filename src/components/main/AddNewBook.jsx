@@ -40,13 +40,11 @@ const AddNewBook = () => {
 
       if (response.status === 201) {
         console.log(
-          'Buch wurde erfolgreich hinzugefügt. ID:',
-          response.data.id,
+          'Buch wurde erfolgreich hinzugefügt.',
           setFeedbackMessage('Das Buch wurde erfolgreich hinzugefügt.')
         );
         setBook(() => ({
           ...book,
-          id: response.data.id,
         }));
         setBook(book);
       } else {

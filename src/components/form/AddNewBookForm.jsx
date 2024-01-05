@@ -125,12 +125,14 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
       const isValidRabatt = validateRabatt(value);
       setRabattValidation({
         isValid: isValidRabatt,
-        errorMessage: isValidRabatt
-          ? ''
-          : 
+        errorMessage: isValidRabatt ? (
+          ''
+        ) : (
           <>
-          Muss ein gültiger Rabatt sein <br/>(z.B. 0.10),
+            Muss ein gültiger Rabatt sein <br />
+            (z.B. 0.10),
           </>
+        ),
       });
     }
 
@@ -143,7 +145,7 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
         ) : (
           <>
             Muss eine gültige URL sein <br />
-             (https://beispiel.com)
+            (https://beispiel.com)
           </>
         ),
       });
@@ -284,7 +286,7 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
                       <FormControl>
                         <RadioGroup
                           name="lieferbar"
-                          value={addBook.lieferbar || true}
+                          value={addBook.lieferbar || 'true'}
                           onChange={handleInputChange}
                         >
                           <FormControlLabel

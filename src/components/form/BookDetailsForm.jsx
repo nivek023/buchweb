@@ -1,4 +1,4 @@
-import { useState} from 'react';
+import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Grid, Typography, Rating, Button, useMediaQuery } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
@@ -54,7 +54,7 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Typography variant="h5" gutterBottom>
-            Buchtitel: {titel.titel}
+            Buchtitel: {titel}
           </Typography>
         </Grid>
         <Grid item xs={6}>
@@ -71,9 +71,7 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
             {exists(lieferbar)
-              ? `Buch kann ${
-                  lieferbar ? '' : 'leider nicht'
-                } geliefert werden`
+              ? `Buch kann ${lieferbar ? '' : 'leider nicht'} geliefert werden`
               : `Lieferstatus unbekannt`}
           </Typography>
         </Grid>
@@ -126,8 +124,7 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
         {gridSpacer}
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
-            <strong>Datum:</strong>{' '}
-            {renderNullableValue(formatDate(datum))}
+            <strong>Datum:</strong> {renderNullableValue(formatDate(datum))}
           </Typography>
         </Grid>
         {gridSpacer}
@@ -147,9 +144,7 @@ const BookDetailsForm = ({ book, deleteBook, writeAccess }) => {
         <Grid item xs={6}>
           <Typography variant="body1" style={{ textAlign: 'left' }}>
             <strong>Schlagwörter:</strong>{' '}
-            {exists(schlagwoerter[0])
-              ? schlagwoerter.join(', ')
-              : 'N/A'}
+            {exists(schlagwoerter[0]) ? schlagwoerter.join(', ') : 'N/A'}
           </Typography>
         </Grid>
         {gridSpacer}
