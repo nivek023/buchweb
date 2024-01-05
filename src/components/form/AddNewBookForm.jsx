@@ -20,24 +20,22 @@ import {
 import BookIcon from '@mui/icons-material/Book';
 import { useState } from 'react';
 
-// eslint-disable-next-line react/prop-types
-const AddNewBookForm = ({ book, handleAddNewBook }) => {
-  const [bookForm, setAddBookForm] = useState({ book });
+const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
+  const [addBook, setAddBook] = useState({ book });
   const bookDTO = {
-    id: bookForm.id,
-    isbn: bookForm.isbn,
-    rating: parseInt(bookForm.rating),
-    art: bookForm.art,
-    preis: parseFloat(bookForm.preis),
-    rabatt: parseFloat(bookForm.rabatt/100),
-    lieferbar: bookForm.lieferbar === true,
-    datum: bookForm.datum,
-    homepage: bookForm.homepage,
-    schlagwoerter: (bookForm.javascript ? ['JAVASCRIPT'] : []).concat(
-      bookForm.typescript ? ['TYPESCRIPT'] : []
+    isbn: addBook.isbn,
+    rating: parseInt(addBook.rating),
+    art: addBook.art,
+    preis: parseFloat(addBook.preis),
+    rabatt: parseFloat(addBook.rabatt / 100),
+    lieferbar: addBook.lieferbar === true,
+    datum: addBook.datum,
+    homepage: addBook.homepage,
+    schlagwoerter: (addBook.javascript ? ['JAVASCRIPT'] : []).concat(
+      addBook.typescript ? ['TYPESCRIPT'] : []
     ),
     titel: {
-      titel: bookForm.titel,
+      titel: addBook.titel,
     },
   };
 
@@ -47,38 +45,25 @@ const AddNewBookForm = ({ book, handleAddNewBook }) => {
     const transformedValue =
       name === 'datum' ? new Date(value).toISOString().split('T')[0] : value;
 
-    setAddBookForm(() => ({
-      ...bookForm,
+    setAddBook(() => ({
+      ...addBook,
       [name]: transformedValue,
     }));
   };
 
   const handleRatingChange = (newValue) => {
-    setAddBookForm(() => ({
-      ...bookForm,
+    setAddBook(() => ({
+      ...addBook,
       rating: newValue,
     }));
   };
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
-
-    if (type === 'checkbox') {
-      setAddBookForm(() => ({
-        ...bookForm,
-        [name]: checked,
-      }));
-    } else if (type === 'radio') {
-      setAddBookForm(() => ({
-        ...bookForm,
-        [name]: value === 'true',
-      }));
-    } else {
-      setAddBookForm(() => ({
-        ...bookForm,
-        [name]: value,
-      }));
-    }
+    const { name, value } = e.target;
+    setAddBook({
+      ...addBook,
+      [name]: value,
+    });
   };
 
   return (
@@ -99,7 +84,7 @@ const AddNewBookForm = ({ book, handleAddNewBook }) => {
                       <TextField
                         type="text"
                         name="isbn"
-                        value={bookForm.isbn}
+                        value={addBook.isbn}
                         onChange={handleInputChange}
                       />
                     </Grid>
@@ -112,7 +97,7 @@ const AddNewBookForm = ({ book, handleAddNewBook }) => {
                       <TextField
                         type="text"
                         name="titel"
-                        value={bookForm.titel}
+                        value={addBook.titel}
                         onChange={handleInputChange}
                         placeholder="Titel"
                       />
@@ -125,7 +110,7 @@ const AddNewBookForm = ({ book, handleAddNewBook }) => {
                     <Grid item xs={12}>
                       <Rating
                         name="rating"
-                        value={bookForm.rating}
+                        value={addBook.rating}
                         onChange={(event, newValue) =>
                           handleRatingChange(newValue)
                         }
@@ -142,16 +127,28 @@ const AddNewBookForm = ({ book, handleAddNewBook }) => {
                         <Select
                           labelId="art-label"
                           name="art"
-                          value={bookForm.art}
+                          value={addBook.art}
                           onChange={(e) =>
-                            setAddBookForm({
-                              ...bookForm,
+                            setAddBook({
+                              ...addBook,
                               art: e.target.value,
                             })
                           }
                         >
-                          <MenuItem value="KINDLE">Kindle</MenuItem>
-                          <MenuItem value="DRUCKAUSGABE">Druckausgabe</MenuItem>
+                          <MenuItem
+                            name="kindle"
+                            value="KINDLE"
+                            onChange={handleInputChange}
+                          >
+                            Kindle
+                          </MenuItem>
+                          <MenuItem
+                            name="druckausgabe"
+                            value="DRUCKAUSGABE"
+                            onChange={handleInputChange}
+                          >
+                            Druckausgabe
+                          </MenuItem>
                         </Select>
                       </FormControl>
                     </Grid>
@@ -164,7 +161,7 @@ const AddNewBookForm = ({ book, handleAddNewBook }) => {
                       <TextField
                         type="date"
                         name="datum"
-                        value={bookForm.datum}
+                        value={addBook.datum}
                         onChange={handleDateChange}
                       />
                     </Grid>
@@ -177,16 +174,18 @@ const AddNewBookForm = ({ book, handleAddNewBook }) => {
                       <FormControl>
                         <RadioGroup
                           name="lieferbar"
-                          value={bookForm.lieferbar}
+                          value={addBook.lieferbar}
                           onChange={handleInputChange}
                         >
                           <FormControlLabel
                             value="true"
+                            name="lieferbar"
                             control={<Radio />}
                             label="Ja"
                           />
                           <FormControlLabel
                             value="false"
+                            name="nicht lieferbar"
                             control={<Radio />}
                             label="Nein"
                           />
@@ -202,7 +201,7 @@ const AddNewBookForm = ({ book, handleAddNewBook }) => {
                       <TextField
                         type="text"
                         name="homepage"
-                        value={bookForm.homepage}
+                        value={addBook.homepage}
                         onChange={handleInputChange}
                       />
                     </Grid>
@@ -216,7 +215,7 @@ const AddNewBookForm = ({ book, handleAddNewBook }) => {
                       <TextField
                         type="text"
                         name="preis"
-                        value={bookForm.preis}
+                        value={addBook.preis}
                         onChange={handleInputChange}
                       />
                     </Grid>
@@ -230,7 +229,7 @@ const AddNewBookForm = ({ book, handleAddNewBook }) => {
                       <TextField
                         type="text"
                         name="rabatt"
-                        value={bookForm.rabatt}
+                        value={addBook.rabatt}
                         onChange={handleInputChange}
                       />
                     </Grid>
@@ -244,9 +243,10 @@ const AddNewBookForm = ({ book, handleAddNewBook }) => {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={bookForm.isJavascript}
+                            checked={addBook.schlagwoerter}
+                            value={['TYPESCRIPT']}
                             onChange={handleInputChange}
-                            name="isJavascript"
+                            name="typescript"
                             color="primary"
                           />
                         }
@@ -255,8 +255,10 @@ const AddNewBookForm = ({ book, handleAddNewBook }) => {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            checked={bookForm.isTypescript}
+                            checked={addBook.schlagwoerter}
+                            value={['JAVASCRIPT']}
                             onChange={handleInputChange}
+                            name="javascript"
                             color="primary"
                           />
                         }
@@ -277,6 +279,18 @@ const AddNewBookForm = ({ book, handleAddNewBook }) => {
           >
             Buch anlegen
           </Button>
+          {feedbackMessage && (
+            <div
+              style={{
+                marginTop: '10px',
+                color: feedbackMessage.includes('erfolgreich')
+                  ? 'green'
+                  : 'red',
+              }}
+            >
+              {feedbackMessage}
+            </div>
+          )}
         </Grid>
       </Grid>
     </div>
