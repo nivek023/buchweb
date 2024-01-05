@@ -18,16 +18,45 @@ import {
   Rating,
 } from '@mui/material';
 import BookIcon from '@mui/icons-material/Book';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import {
+  validateISBN,
+  validatePreis,
+  validateRabatt,
+  validateHomepage,
+  validateTitle,
+} from './inputValidator';
 
 const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
+  const [isbnValidation, setIsbnValidation] = useState({
+    isValid: true,
+    errorMessage: '',
+  });
+
+  const [titleValidation, setTitleValidation] = useState({
+    isValid: true,
+    errorMessage: '',
+  });
+  const [preisValidation, setPreisValidation] = useState({
+    isValid: true,
+    errorMessage: '',
+  });
+  const [rabattValidation, setRabattValidation] = useState({
+    isValid: true,
+    errorMessage: '',
+  });
+  const [homepageValidation, setHomepageValidation] = useState({
+    isValid: true,
+    errorMessage: '',
+  });
+  const [formValid, setFormValid] = useState(true);
   const [addBook, setAddBook] = useState({ book });
   const bookDTO = {
     isbn: addBook.isbn,
     rating: parseInt(addBook.rating),
     art: addBook.art,
     preis: parseFloat(addBook.preis),
-    rabatt: parseFloat(addBook.rabatt / 100),
+    rabatt: parseFloat(addBook.rabatt),
     lieferbar: addBook.lieferbar === 'true' ? true : false,
     datum: addBook.datum,
     homepage: addBook.homepage,
@@ -65,7 +94,67 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
       ...addBook,
       [name]: value,
     });
+
+    if (name === 'isbn') {
+      const isValidISBN = validateISBN(value);
+      setIsbnValidation({
+        isValid: isValidISBN,
+        errorMessage: isValidISBN ? '' : 'Muss eine gültige ISBN sein',
+      });
+    }
+
+    if (name === 'titel') {
+      const isValidTitle = validateTitle(value);
+      setTitleValidation({
+        isValid: isValidTitle,
+        errorMessage: isValidTitle ? '' : 'Der Titel darf nicht leer sein',
+      });
+    }
+
+    if (name === 'preis') {
+      const isValidPreis = validatePreis(value);
+      setPreisValidation({
+        isValid: isValidPreis,
+        errorMessage: isValidPreis ? '' : 'Ungültiges Betragsformat',
+      });
+    }
+
+    if (name === 'rabatt') {
+      const isValidRabatt = validateRabatt(value);
+      setRabattValidation({
+        isValid: isValidRabatt,
+        errorMessage: isValidRabatt
+          ? ''
+          : 'Muss ein gültiger Rabatt sein (z.B. 0.10)',
+      });
+    }
+
+    if (name === 'homepage') {
+      const isValidHomepage = validateHomepage(value);
+      setHomepageValidation({
+        isValid: isValidHomepage,
+        errorMessage: isValidHomepage
+          ? ''
+          : 'Muss ein gültige Homepage-URL sein (https://beispiel.com) ',
+      });
+    }
   };
+
+  useEffect(() => {
+    setFormValid(
+      isbnValidation.isValid &&
+        titleValidation &&
+        preisValidation.isValid &&
+        rabattValidation.isValid &&
+        homepageValidation.isValid
+    );
+  }, [
+    isbnValidation.isValid,
+    titleValidation,
+    preisValidation.isValid,
+    rabattValidation.isValid,
+    homepageValidation.isValid,
+  ]);
 
   return (
     <div>
@@ -89,6 +178,8 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
                         value={addBook.isbn || ''}
                         onChange={handleInputChange}
                         label="Required"
+                        error={!isbnValidation.isValid}
+                        helperText={isbnValidation.errorMessage}
                       />
                     </Grid>
                   </TableCell>
@@ -101,9 +192,11 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
                         required
                         type="text"
                         name="titel"
-                        value={addBook.titel}
+                        value={addBook.titel || ''}
                         onChange={handleInputChange}
                         label="Required"
+                        error={!titleValidation.isValid}
+                        helperText={titleValidation.errorMessage}
                       />
                     </Grid>
                   </TableCell>
@@ -208,6 +301,8 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
                         name="homepage"
                         value={addBook.homepage || ''}
                         onChange={handleInputChange}
+                        error={!homepageValidation.isValid}
+                        helperText={homepageValidation.errorMessage}
                       />
                     </Grid>
                   </TableCell>
@@ -224,6 +319,8 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
                         value={addBook.preis || ''}
                         onChange={handleInputChange}
                         label="Required"
+                        error={!preisValidation.isValid}
+                        helperText={preisValidation.errorMessage}
                       />
                     </Grid>
                   </TableCell>
@@ -238,6 +335,8 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
                         name="rabatt"
                         value={addBook.rabatt || ''}
                         onChange={handleInputChange}
+                        error={!rabattValidation.isValid}
+                        helperText={rabattValidation.errorMessage}
                       />
                     </Grid>
                   </TableCell>
@@ -283,6 +382,7 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
             variant="contained"
             style={{ alignItems: 'center', width: 'auto' }}
             onClick={() => handleAddNewBook(bookDTO)}
+            disabled={!formValid}
           >
             Buch anlegen
           </Button>
