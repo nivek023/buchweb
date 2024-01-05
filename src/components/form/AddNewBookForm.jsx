@@ -276,7 +276,7 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
                       <FormControl>
                         <RadioGroup
                           name="lieferbar"
-                          value={addBook.lieferbar}
+                          value={addBook.lieferbar || true}
                           onChange={handleInputChange}
                         >
                           <FormControlLabel

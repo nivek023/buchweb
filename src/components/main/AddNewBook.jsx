@@ -14,7 +14,7 @@ const AddNewBook = () => {
     art: '',
     preis: '',
     rabatt: '',
-    lieferbar: true,
+    lieferbar: 'true',
     datum: '',
     homepage: '',
     titel: '',
