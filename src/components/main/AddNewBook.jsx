@@ -1,7 +1,8 @@
 import { useContext, useState } from 'react';
-import { AuthContext } from '../provider/AuthProvider';
 import axios from 'axios';
-import AddNewBookForm from '../form/AddNewBookForm';
+
+import { AuthContext } from '../provider/AuthProvider.jsx';
+import AddNewBookForm from '../form/AddNewBookForm.jsx';
 
 const AddNewBook = () => {
   const { cToken } = useContext(AuthContext);

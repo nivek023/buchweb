@@ -10,8 +10,9 @@ import {
 } from '@mui/material';
 import { useContext, useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
 import PropTypes from 'prop-types';
+import axios from 'axios';
+
 import { AuthContext } from '../provider/AuthProvider.jsx';
 
 const BookChangeForm = ({ book, etag }) => {
@@ -86,7 +87,7 @@ const BookChangeForm = ({ book, etag }) => {
   ]);
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, value, checked } = e.target;
     if (name === 'typescript' || name === 'javascript') {
       let schlagwoerter = editedBook.schlagwoerter;
       if (name === 'javascript') {
@@ -196,12 +197,9 @@ const BookChangeForm = ({ book, etag }) => {
         navigate(`/details/${id}`);
       } else {
         console.error('Error occurred during PUT request:', response);
-        setUpdateError(true);
       }
     } catch (error) {
       console.error('Error occurred during PUT request:', error.message);
-      setErrorMessage('Ein Fehler ist aufgetreten. Bitte versuche es erneut.');
-      setUpdateError(true);
     }
   };
 

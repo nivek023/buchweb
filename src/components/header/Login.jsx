@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography';
 import { useAuth } from '../provider/useAuth.js';
 
 const Login = () => {
-  const { logout, login, cToken, isLoggedIn} = useAuth();
+  const { logout, login, isLoggedIn} = useAuth();
   const [benutzer, setBenutzer] = useState('');
   const [passwort, setPasswort] = useState('');
   const [errorMessage, setErrorMessage] = useState('');

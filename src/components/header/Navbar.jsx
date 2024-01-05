@@ -1,4 +1,15 @@
-import { AppBar, Toolbar, Button, Typography, TextField, Drawer, List, ListItem, ListItemText, useMediaQuery } from '@mui/material';
+import {
+  AppBar,
+  Toolbar,
+  Button,
+  Typography,
+  TextField,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  useMediaQuery,
+} from '@mui/material';
 import { styled } from '@mui/system';
 import { useNavigate, useLocation } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
@@ -95,7 +106,7 @@ const Navbar = () => {
     if (isLoggedIn()) {
       setNavbarColor('success');
     }
-  }, [isLoggedIn()]);
+  }, [isLoggedIn]);
 
   useEffect(() => {
     if (!isMobile && location.pathname === '/login') {

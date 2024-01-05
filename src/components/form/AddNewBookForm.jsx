@@ -19,6 +19,7 @@ import {
 } from '@mui/material';
 import BookIcon from '@mui/icons-material/Book';
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 
 const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
   const [addBook, setAddBook] = useState({ book });
@@ -302,6 +303,12 @@ const AddNewBookForm = ({ book, handleAddNewBook, feedbackMessage }) => {
       </Grid>
     </div>
   );
+};
+
+AddNewBookForm.propTypes = {
+  book: PropTypes.object.isRequired,
+  handleAddNewBook: PropTypes.func.isRequired,
+  feedbackMessage: PropTypes.string,
 };
 
 export default AddNewBookForm;
